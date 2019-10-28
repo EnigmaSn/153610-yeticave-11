@@ -3,47 +3,77 @@ $is_auth = rand(0, 1);
 
 $user_name = 'Anna';
 
-$categories  = ['Доски и лыжи', 'Крепления', 'Ботинки', 'Одежда', 'Инструменты', 'Разное'];
-
-$ads = [
+$categories  = [
     [
-        'item_name' => '2014 Rossignol District Snowboard',
-        'item_category' => 'Доски и лыжи',
-        'item_price' => 10999,
-        'item_img_url' => 'img/lot-1.jpg'
+        'name' => 'Доски и лыжи',
+        'url' => '/boards-and-skis.html'
     ],
     [
-        'item_name' => 'DC Ply Mens 2016/2017 Snowboard',
-        'item_category' => 'Доски и лыжи',
-        'item_price' => 159999,
-        'item_img_url' => 'img/lot-2.jpg'
+        'name' => 'Крепления',
+        'url' => 'pages/mounts.html'
     ],
     [
-        'item_name' => 'Крепления Union Contact Pro 2015 года размер L/XL',
-        'item_category' => 'Крепления',
-        'item_price' => 8000,
-        'item_img_url' => 'img/lot-3.jpg'
+        'name' => 'Ботинки',
+        'url' => 'pages/boots.html'
     ],
     [
-        'item_name' => 'Ботинки для сноуборда DC Mutiny Charocal',
-        'item_category' => 'Ботинки',
-        'item_price' => 10999,
-        'item_img_url' => 'img/lot-4.jpg'
+        'name' => 'Одежда',
+        'url' => 'pages/clothes.html'
     ],
     [
-        'item_name' => 'Куртка для сноуборда DC Mutiny Charocal',
-        'item_category' => 'Одежда',
-        'item_price' => 7500,
-        'item_img_url' => 'img/lot-5.jpg'
+        'name' => 'Инструменты',
+        'url' => 'pages/tools.html'
     ],
     [
-        'item_name' => 'Маска Oakley Canopy',
-        'item_category' => 'Разное',
-        'item_price' => 5400,
-        'item_img_url' => 'img/lot-6.jpg'
+        'name' => 'Разное',
+        'url' => 'pages/other.html'
     ]
 ];
 
+$ads = [
+    [
+        'name' => '2014 Rossignol District Snowboard',
+        'category' => $categories[0]['name'],
+        'price' => 10999,
+        'img_url' => 'img/lot-1.jpg',
+        'url' => 'pages/lot-1.html'
+    ],
+    [
+        'name' => 'DC Ply Mens 2016/2017 Snowboard',
+        'category' => $categories[0]['name'],
+        'price' => 159999,
+        'img_url' => 'img/lot-2.jpg',
+        'url' => 'pages/lot-2.html'
+    ],
+    [
+        'name' => 'Крепления Union Contact Pro 2015 года размер L/XL',
+        'category' => $categories[1]['name'],
+        'price' => 8000,
+        'img_url' => 'img/lot-3.jpg',
+        'url' => 'pages/lot-3.html'
+    ],
+    [
+        'name' => 'Ботинки для сноуборда DC Mutiny Charocal',
+        'category' => $categories[2]['name'],
+        'price' => 10999,
+        'img_url' => 'img/lot-4.jpg',
+        'url' => 'pages/lot-4.html'
+    ],
+    [
+        'name' => 'Куртка для сноуборда DC Mutiny Charocal',
+        'category' => $categories[3]['name'],
+        'price' => 7500,
+        'img_url' => 'img/lot-5.jpg',
+        'url' => 'pages/lot-5.html'
+    ],
+    [
+        'name' => 'Маска Oakley Canopy',
+        'category' => $categories[5]['name'],
+        'price' => 5400,
+        'img_url' => 'img/lot-6.jpg',
+        'url' => 'pages/lot-6.html'
+    ]
+];
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -94,11 +124,11 @@ $ads = [
         <h2 class="promo__title">Нужен стафф для катки?</h2>
         <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
         <ul class="promo__list">
-            <?php foreach ($ads as $key => $sub_arr): ?>
+            <?php foreach ($ads as $adv): ?>
                 <li class="promo__item promo__item--boards">
                     <!-- тут тоже вопрос с адресами ссылок -->
-                    <a class="promo__link" href="pages/all-lots.html">
-                        <?= $sub_arr['item_name']; ?>
+                    <a class="promo__link" href="<?= $adv['url']; ?>">
+                        <?= $adv['name']; ?>
                     </a>
                 </li>
             <?php endforeach ?>
@@ -110,18 +140,27 @@ $ads = [
         </div>
         <ul class="lots__list">
             <!--заполните этот список из массива с товарами-->
-            <?php foreach ($ads as $key => $sub_arr): ?>
+            <?php foreach ($ads as $adv): ?>
                 <li class="lots__item lot">
                     <div class="lot__image">
-                        <img src="<?= $sub_arr['item_img_url']; ?>" width="350" height="260" alt="">
+                        <img src="<?= $adv['img_url']; ?>" width="350" height="260" alt="">
                     </div>
                     <div class="lot__info">
-                        <span class="lot__category"><?= $sub_arr['item_category']; ?></span>
-                        <h3 class="lot__title"><a class="text-link" href="pages/lot.html"><?= $sub_arr['item_name']; ?></a></h3>
+                        <span class="lot__category">
+                            <?= $adv['category']; ?>
+                        </span>
+                        <h3 class="lot__title">
+                            <a class="text-link" href="<?= $adv['url']; ?>">
+                                <?= $adv['name']; ?>
+                            </a>
+                        </h3>
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount">Стартовая цена</span>
-                                <span class="lot__cost"><?= $sub_arr['item_price']; ?><b class="rub">р</b></span>
+                                <span class="lot__cost">
+                                    <?= $adv['price']; ?>
+                                    <b class="rub">р</b>
+                                </span>
                             </div>
                             <div class="lot__timer timer">
                                 12:23
@@ -138,11 +177,11 @@ $ads = [
 <footer class="main-footer">
     <nav class="nav">
         <ul class="nav__list container">
-            <?php foreach ($categories as $value): ?>
+            <?php foreach ($categories as $category): ?>
                 <li class="nav__item">
                     <!-- какой здесь должен быть адрес страниц? они же разные, а массив одномерный -->
-                    <a href="pages/all-lots.html">
-                        <?= $value; ?>
+                    <a href="pages/<?= $category['url']; ?>">
+                        <?= $category['name']; ?>
                     </a>
                 </li>
             <?php endforeach ?>
