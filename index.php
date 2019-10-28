@@ -139,7 +139,6 @@ function format_sum (float $number) {
         <ul class="promo__list">
             <?php foreach ($ads as $adv): ?>
                 <li class="promo__item promo__item--boards">
-                    <!-- тут тоже вопрос с адресами ссылок -->
                     <a class="promo__link" href="<?= $adv['url']; ?>">
                         <?= $adv['name']; ?>
                     </a>
@@ -152,7 +151,6 @@ function format_sum (float $number) {
             <h2>Открытые лоты</h2>
         </div>
         <ul class="lots__list">
-            <!--заполните этот список из массива с товарами-->
             <?php foreach ($ads as $adv): ?>
                 <li class="lots__item lot">
                     <div class="lot__image">
@@ -191,8 +189,7 @@ function format_sum (float $number) {
         <ul class="nav__list container">
             <?php foreach ($categories as $category): ?>
                 <li class="nav__item">
-                    <!-- какой здесь должен быть адрес страниц? они же разные, а массив одномерный -->
-                    <a href="pages/<?= $category['url']; ?>">
+                    <a href="<?= $category['url']; ?>">
                         <?= $category['name']; ?>
                     </a>
                 </li>
