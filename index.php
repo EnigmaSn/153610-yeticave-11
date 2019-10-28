@@ -74,6 +74,19 @@ $ads = [
         'url' => 'pages/lot-6.html'
     ]
 ];
+
+function format_sum (float $number) {
+    $number = ceil($number);
+    $ruble_symbol = '<b class="rub">р</b>';
+
+    if ($number < 1000) {
+        return $number . $ruble_symbol;
+    } elseif ($number >= 1000) {
+        $number = number_format($number, 0, '', ' ');
+        // TODO попробовать второй способ
+        return $number . $ruble_symbol;
+    }
+};
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -158,8 +171,7 @@ $ads = [
                             <div class="lot__rate">
                                 <span class="lot__amount">Стартовая цена</span>
                                 <span class="lot__cost">
-                                    <?= $adv['price']; ?>
-                                    <b class="rub">р</b>
+                                    <?= format_sum($adv['price']); ?>
                                 </span>
                             </div>
                             <div class="lot__timer timer">
