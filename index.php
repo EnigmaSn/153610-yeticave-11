@@ -6,27 +6,33 @@ $user_name = 'Anna';
 $categories  = [
     [
         'name' => 'Доски и лыжи',
-        'url' => '/boards-and-skis.html'
+        'url' => 'boards-and-skis',
+        'modifier' => 'boards'
     ],
     [
         'name' => 'Крепления',
-        'url' => 'pages/mounts.html'
+        'url' => 'mounts',
+        'modifier' => 'attachment'
     ],
     [
         'name' => 'Ботинки',
-        'url' => 'pages/boots.html'
+        'url' => 'boots',
+        'modifier' => 'boots'
     ],
     [
         'name' => 'Одежда',
-        'url' => 'pages/clothes.html'
+        'url' => 'clothes',
+        'modifier' => 'clothing'
     ],
     [
         'name' => 'Инструменты',
-        'url' => 'pages/tools.html'
+        'url' => 'tools',
+        'modifier' => 'tools'
     ],
     [
         'name' => 'Разное',
-        'url' => 'pages/other.html'
+        'url' => 'other',
+        'modifier' => 'other'
     ]
 ];
 
@@ -35,57 +41,51 @@ $ads = [
         'name' => '2014 Rossignol District Snowboard',
         'category' => $categories[0]['name'],
         'price' => 10999,
-        'img_url' => 'img/lot-1.jpg',
-        'url' => 'pages/lot-1.html'
+        'img_url' => 'lot-1.jpg'
     ],
     [
         'name' => 'DC Ply Mens 2016/2017 Snowboard',
         'category' => $categories[0]['name'],
         'price' => 159999,
-        'img_url' => 'img/lot-2.jpg',
-        'url' => 'pages/lot-2.html'
+        'img_url' => 'lot-2.jpg'
     ],
     [
         'name' => 'Крепления Union Contact Pro 2015 года размер L/XL',
         'category' => $categories[1]['name'],
         'price' => 8000,
-        'img_url' => 'img/lot-3.jpg',
-        'url' => 'pages/lot-3.html'
+        'img_url' => 'lot-3.jpg'
     ],
     [
         'name' => 'Ботинки для сноуборда DC Mutiny Charocal',
         'category' => $categories[2]['name'],
         'price' => 10999,
-        'img_url' => 'img/lot-4.jpg',
-        'url' => 'pages/lot-4.html'
+        'img_url' => 'lot-4.jpg'
     ],
     [
         'name' => 'Куртка для сноуборда DC Mutiny Charocal',
         'category' => $categories[3]['name'],
         'price' => 7500,
-        'img_url' => 'img/lot-5.jpg',
-        'url' => 'pages/lot-5.html'
+        'img_url' => 'lot-5.jpg'
     ],
     [
         'name' => 'Маска Oakley Canopy',
         'category' => $categories[5]['name'],
         'price' => 5400,
-        'img_url' => 'img/lot-6.jpg',
-        'url' => 'pages/lot-6.html'
+        'img_url' => 'lot-6.jpg'
     ]
 ];
 
-function format_sum (float $number) {
+function format_sum(float $number) {
     $number = ceil($number);
     $ruble_symbol = '<b class="rub">р</b>';
 
-    if ($number < 1000) {
-        return $number . $ruble_symbol;
-    } elseif ($number >= 1000) {
+    if ($number >= 1000) {
         $number = number_format($number, 0, '', ' ');
         // TODO попробовать второй способ
         return $number . $ruble_symbol;
     }
+
+    return $number . $ruble_symbol;
 };
 ?>
 <!DOCTYPE html>
@@ -137,10 +137,10 @@ function format_sum (float $number) {
         <h2 class="promo__title">Нужен стафф для катки?</h2>
         <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
         <ul class="promo__list">
-            <?php foreach ($ads as $adv): ?>
-                <li class="promo__item promo__item--boards">
-                    <a class="promo__link" href="<?= $adv['url']; ?>">
-                        <?= $adv['name']; ?>
+            <?php foreach ($categories as $category): ?>
+                <li class="promo__item promo__item--<?= $category['modifier']; ?>">
+                    <a class="promo__link" href="/pages/<?= $category['url']; ?>.html">
+                        <?= $category['name']; ?>
                     </a>
                 </li>
             <?php endforeach ?>
@@ -154,7 +154,7 @@ function format_sum (float $number) {
             <?php foreach ($ads as $adv): ?>
                 <li class="lots__item lot">
                     <div class="lot__image">
-                        <img src="<?= $adv['img_url']; ?>" width="350" height="260" alt="">
+                        <img src="img/<?= $adv['img_url']; ?>" width="350" height="260" alt="">
                     </div>
                     <div class="lot__info">
                         <span class="lot__category">
@@ -189,7 +189,7 @@ function format_sum (float $number) {
         <ul class="nav__list container">
             <?php foreach ($categories as $category): ?>
                 <li class="nav__item">
-                    <a href="<?= $category['url']; ?>">
+                    <a href="/pages/<?= $category['url']; ?>.html">
                         <?= $category['name']; ?>
                     </a>
                 </li>
