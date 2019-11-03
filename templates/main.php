@@ -26,7 +26,7 @@
                             <?= $adv['category']; ?>
                         </span>
                     <h3 class="lot__title">
-                        <a class="text-link" href="<?= $adv['url']; ?>">
+                        <a class="text-link" href="#">
                             <?= $adv['name']; ?>
                         </a>
                     </h3>
@@ -37,8 +37,17 @@
                                     <?= format_sum($adv['price']); ?>
                                 </span>
                         </div>
-                        <div class="lot__timer timer">
-                            12:23
+
+                        <div class="lot__timer timer <?php
+                            $hours = find_remaining_time($adv['finish_date'])['hours'];
+                            if ($hours <= 0) {
+                                echo 'timer--finishing';
+                            }
+                            ?>">
+                            <?=
+                                find_remaining_time($adv['finish_date'])['hours'] . ':' .
+                                find_remaining_time($adv['finish_date'])['minutes'];
+                            ?>
                         </div>
                     </div>
                 </div>
