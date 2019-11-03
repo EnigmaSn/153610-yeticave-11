@@ -34,13 +34,22 @@ function find_remaining_time($date) {
     // первый способ
     $current_date = time(); // текущая метка времени
     $date = strtotime($date); // метка времени лота
-    $remaining_time = $date - $current_date; // разница временных меток
-    $remaining_time_hours = floor($remaining_time / 3600);
-    $remaining_time_minutes = (floor($remaining_time / 60)) - ($remaining_time_hours * 60);
-    $remaining_time_arr = [
-        'hours' => $remaining_time_hours,
-        'minutes' => $remaining_time_minutes,
-    ];
+    $remaining_time_arr = [];
+    if ($current_date < $date) {
+        $remaining_time = $date - $current_date; // разница временных меток
+        $remaining_time_hours = floor($remaining_time / 3600);
+        $remaining_time_minutes = (floor($remaining_time / 60)) - ($remaining_time_hours * 60);
+        $remaining_time_arr = [
+            'hours' => $remaining_time_hours,
+            'minutes' => $remaining_time_minutes,
+            'status' => true
+        ];
+    } else {
+        $remaining_time_arr = [
+            'status' => true,
+        ];
+    }
+    return $remaining_time_arr;
 
     // второй способ
     // не получилось с этим способом добавить класс, если осталось меньше часа
@@ -57,7 +66,7 @@ function find_remaining_time($date) {
 //    ];
 //    $remaining_time = implode(':', $remaining_time_arr);
     // TODO get_noun_plural_form
-    return $remaining_time_arr;
+
 //    return $remaining_time;
 }
 //find_remaining_time($ads[0]['finish_date']);
