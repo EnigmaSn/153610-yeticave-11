@@ -37,7 +37,7 @@ $ads = [
         'category' => $categories[0]['name'],
         'price' => 10999,
         'img_url' => 'lot-1.jpg',
-        'finish_date' => '2019-11-30',
+        'finish_date' => '2019-10-04',
     ],
     [
         'name' => 'DC Ply Mens 2016/2017 Snowboard',
