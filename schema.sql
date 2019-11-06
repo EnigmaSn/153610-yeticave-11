@@ -1,5 +1,10 @@
--- drop database if exist
+-- удаление базы, если она уже существует
+DROP DATABASE IF EXISTS yeticave;
+
 -- кодировка
+DEFAULT CHARACTER SET utf8; -- набор используемых символов.
+DEFAULT COLLATE utf8_general_ci; -- набор правил для сравнения символов в наборе.
+
 CREATE DATABASE yeticave;
 
 USE yeticave;
@@ -41,5 +46,13 @@ CREATE TABLE bets (
 	lot_id INT
 );
 
--- прописать связи отдельно
--- связи в php
+-- внешние ключи для лотов
+ALTER TABLE lots ADD FOREIGN KEY(author_id) REFERENCES users(id);
+ALTER TABLE lots ADD FOREIGN KEY(winner_id) REFERENCES users(id);
+ALTER TABLE lots ADD FOREIGN KEY(category_id) REFERENCES categories(id);
+
+-- внешние ключи для ставок
+ALTER TABLE bets ADD FOREIGN KEY(user_id) REFERENCES users(id);
+ALTER TABLE bets ADD FOREIGN KEY(lot_id) REFERENCES lots(id);
+
+-- связи в php (в следующем задании?)
