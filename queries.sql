@@ -1,7 +1,6 @@
 USE yeticave;
 
--- можно было вставить уже имеющиеся данные
--- из массивов автоматически или это только в php работает?
+-- регулярки из php в sql
 
 -- Добавление категорий
 INSERT INTO categories SET name = 'Доски и лыжи', symbol_code = 'boards';
@@ -13,14 +12,13 @@ INSERT INTO categories SET name = 'Разное', symbol_code = 'other';
 
 -- добавление юзеров
 INSERT INTO users SET
-    -- не работает функция GETDATE(). как-то по другому текущую дату надо прописывать?
-    register_date = '2019-10-11',
+    register_date = NOW(),
     email = 'the_boy_who_lived@hogwarts.uk',
     name = 'Harry Potter',
     password = 'password',
     contact = 'facebook.com/harry_potter';
 INSERT INTO users SET
-    register_date = '2019-10-11',
+    register_date =  NOW(),
     email = 'the_half-blood_prince@hogwarts.uk',
     name = 'Severus Snape',
     password = 'password2',
@@ -28,7 +26,7 @@ INSERT INTO users SET
 
 -- добавление объявлений
 INSERT INTO lots SET
-        create_date = '2019-10-11',
+        create_date = NOW(),
         name = '2014 Rossignol District Snowboard',
         description = 'Это ноуборд. Хороший такой. Берите',
         img = 'lot-1.jpg',
@@ -39,7 +37,7 @@ INSERT INTO lots SET
         winner_id = null,
         category_id = 1;
 INSERT INTO lots SET
-        create_date = '2019-10-11',
+        create_date = NOW(),
         name = 'DC Ply Mens 2016/2017 Snowboard',
         description = 'Почти новый сноуборд',
         img = 'lot-2.jpg',
@@ -50,7 +48,7 @@ INSERT INTO lots SET
         winner_id = null,
         category_id = 1;
 INSERT INTO lots SET
-        create_date = '2019-10-11',
+        create_date = NOW(),
         name = 'Крепления Union Contact Pro 2015 года размер L/XL',
         description = 'Крепления. Целые',
         img = 'lot-3.jpg',
@@ -61,7 +59,7 @@ INSERT INTO lots SET
         winner_id = null,
         category_id = 2;
 INSERT INTO lots SET
-        create_date = '2019-10-11',
+        create_date = NOW(),
         name = 'Ботинки для сноуборда DC Mutiny Charocal',
         description = 'Ботинки для сноуборда. 43 размер',
         img = 'lot-4.jpg',
@@ -72,7 +70,7 @@ INSERT INTO lots SET
         winner_id = null,
         category_id = 3;
 INSERT INTO lots SET
-    create_date = '2019-10-11',
+    create_date = NOW(),
     name = 'Куртка для сноуборда DC Mutiny Charocal',
     description = 'Куртка для сноуборда. Теплая',
     img = 'lot-5.jpg',
@@ -83,7 +81,7 @@ INSERT INTO lots SET
     winner_id = null,
     category_id = 4;
 INSERT INTO lots SET
-    create_date = '2019-10-11',
+    create_date = NOW(),
     name = 'Маска Oakley Canopy',
     description = 'Крутая маска',
     img = 'lot-6.jpg',
@@ -96,12 +94,12 @@ INSERT INTO lots SET
 
 -- добавление ставок для объявлений
 INSERT INTO bets SET
-    date = '2019-10-11',
+    date = NOW(),
     price = 20000,
     user_id = 2,
     lot_id = 1;
 INSERT INTO bets SET
-    date = '2019-10-11',
+    date = NOW(),
     price = 16000,
     user_id = 1,
     lot_id = 2;
@@ -135,6 +133,6 @@ WHERE lots.id = 1;
 -- по его идентификатору с сортировкой по дате.
 SELECT * FROM bets
 JOIN lots ON bets.lot_id = lots.id
-WHERE lots.id = 1;
+WHERE lots.id = 1
 ORDER BY bets.date DESC;
 
