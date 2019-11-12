@@ -26,7 +26,7 @@
                             <?= $adv['category_name']; ?>
                         </span>
                     <h3 class="lot__title">
-                        <a class="text-link" href="#">
+                        <a class="text-link" href="lot.php?id=<?= $adv['lot_id']; ?>">
                             <?= $adv['lot_name']; ?>
                         </a>
                     </h3>
