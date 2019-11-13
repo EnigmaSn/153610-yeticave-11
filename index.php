@@ -34,9 +34,9 @@
     // как это работает?
     mysqli_query($link, '
         INSERT INTO lots SET
-            create_date = NOW(),
-            name = \'Тестовый лот из PHP\',
-            description = \'Это ноуборд. Хороший такой. Берите\',
+            `create_date` = NOW(),
+            `name` = "Тестовый лот из PHP",
+            `description` = \'Это ноуборд. Хороший такой. Берите\',
             img = \'lot-1.jpg\',
             start_price = 10999,
             end_date = \'2019-10-04\',
