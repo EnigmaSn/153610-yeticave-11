@@ -32,20 +32,29 @@ $categories = mysqli_fetch_all($categories_result, MYSQLI_ASSOC);
 
 // подготовленные выражения !!
 // db_get_prepare_stmt
+
 $received_lot_id = $_GET['id'];
 $received_lot_id = intval($received_lot_id);
 if (is_int($received_lot_id)) {
-    $received_lot_id_exist = mysqli_query($link, '
-        SELECT id FROM lots WHERE id=$received_lot_id;
-    ');
-    echo '<br> число';
+    // Сформируйте и выполните SQL
+    // на чтение записи из таблицы с лотами,
+    // где id лота равен полученному из параметра запроса.
+    $lot_result = mysqli_query($link,
+        "SELECT lots.id, create_date, lots.name AS lot_name, description, img, start_price + step AS current_price,
+        end_date, step, author_id, winner_id, categories.name AS category_id
+        FROM lots
+        JOIN categories ON lots.category_id = categories.id
+        WHERE lots.id = $received_lot_id;
+    ");
+    // преобразование полученных данных в двумерный массив
+    $adv = mysqli_fetch_array($lot_result, MYSQLI_ASSOC);
 
-    if (!is_null($received_lot_id_exist)) {
+    if (!is_null($lot_result)) {
         $page_content = include_template(
             'lot-main.php',
             [
                 'categories' => $categories,
-                'ads' => $ads,
+                'adv' => $adv,
             ]
         );
         $layout_content = include_template(
