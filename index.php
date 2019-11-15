@@ -24,27 +24,27 @@
     // ВОПРОС: в качестве url мы подставляет символьный код категории?
 
     // добавление новой категории
-    mysqli_query($link, 'INSERT INTO categories SET name = \'test-in-php\', symbol_code = \'test-in-php\';');
-    mysqli_query($link, 'INSERT INTO categories SET name = \'test-in-php\', symbol_code = \'test-in-php\';');
+    // mysqli_query($link, 'INSERT INTO categories SET name = \'test-in-php\', symbol_code = \'test-in-php\';');
+    // mysqli_query($link, 'INSERT INTO categories SET name = \'test-in-php\', symbol_code = \'test-in-php\';');
     // сначала вставляла запрос в файл queries, но там было ноль реакции,
     // но после запроса из PHP появились оба варианта
     // с чем это связано?
 
     // а категория вообще добавляется при каждом обновлении страницы
     // как это работает?
-    mysqli_query($link, '
-        INSERT INTO lots SET
-            `create_date` = NOW(),
-            `name` = "Тестовый лот из PHP",
-            `description` = \'Это ноуборд. Хороший такой. Берите\',
-            img = \'lot-1.jpg\',
-            start_price = 10999,
-            end_date = \'2019-10-04\',
-            step = 500,
-            author_id = 1,
-            winner_id = null,
-            category_id = 1;
-    ');
+//    mysqli_query($link, '
+//        INSERT INTO lots SET
+//            `create_date` = NOW(),
+//            `name` = "Тестовый лот из PHP",
+//            `description` = \'Это ноуборд. Хороший такой. Берите\',
+//            img = \'lot-1.jpg\',
+//            start_price = 10999,
+//            end_date = \'2019-10-04\',
+//            step = 500,
+//            author_id = 1,
+//            winner_id = null,
+//            category_id = 1;
+//    ');
 
     $page_content = include_template(
         'main.php',

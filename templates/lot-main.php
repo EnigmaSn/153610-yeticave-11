@@ -20,9 +20,20 @@
         </div>
         <div class="lot-item__right">
           <div class="lot-item__state">
-            <div class="lot-item__timer timer">
-10:54
-</div>
+            <div class="lot-item__timer timer
+            <?php
+            $hours = find_remaining_time($adv['end_date'])['hours'];
+            $minutes = find_remaining_time($adv['end_date'])['minutes'];
+
+            if ($hours === 0) {
+                echo 'timer--finishing';
+            };
+            ?>">
+                <?=
+                    find_remaining_time($adv['end_date'])['hours'] . ':' .
+                    find_remaining_time($adv['end_date'])['minutes'];
+                ?>
+            </div>
             <div class="lot-item__cost-state">
               <div class="lot-item__rate">
                 <span class="lot-item__amount">Текущая цена</span>
@@ -42,58 +53,28 @@
             </form>
           </div>
           <div class="history">
-            <h3>История ставок (<span>10</span>)</h3>
+            <h3>История ставок (<span><?= $bets_count; ?></span>)</h3>
             <table class="history__list">
-              <tr class="history__item">
-                <td class="history__name">Иван</td>
-                <td class="history__price">10 999 р</td>
-                <td class="history__time">5 минут назад</td>
-              </tr>
-              <tr class="history__item">
-                <td class="history__name">Константин</td>
-                <td class="history__price">10 999 р</td>
-                <td class="history__time">20 минут назад</td>
-              </tr>
-              <tr class="history__item">
-                <td class="history__name">Евгений</td>
-                <td class="history__price">10 999 р</td>
-                <td class="history__time">Час назад</td>
-              </tr>
-              <tr class="history__item">
-                <td class="history__name">Игорь</td>
-                <td class="history__price">10 999 р</td>
-                <td class="history__time">19.03.17 в 08:21</td>
-              </tr>
-              <tr class="history__item">
-                <td class="history__name">Енакентий</td>
-                <td class="history__price">10 999 р</td>
-                <td class="history__time">19.03.17 в 13:20</td>
-              </tr>
-              <tr class="history__item">
-                <td class="history__name">Семён</td>
-                <td class="history__price">10 999 р</td>
-                <td class="history__time">19.03.17 в 12:20</td>
-              </tr>
-              <tr class="history__item">
-                <td class="history__name">Илья</td>
-                <td class="history__price">10 999 р</td>
-                <td class="history__time">19.03.17 в 10:20</td>
-              </tr>
-              <tr class="history__item">
-                <td class="history__name">Енакентий</td>
-                <td class="history__price">10 999 р</td>
-                <td class="history__time">19.03.17 в 13:20</td>
-              </tr>
-              <tr class="history__item">
-                <td class="history__name">Семён</td>
-                <td class="history__price">10 999 р</td>
-                <td class="history__time">19.03.17 в 12:20</td>
-              </tr>
-              <tr class="history__item">
-                <td class="history__name">Илья</td>
-                <td class="history__price">10 999 р</td>
-                <td class="history__time">19.03.17 в 10:20</td>
-              </tr>
+                <?php foreach ($bets as $bet): ?>
+                    <tr class="history__item">
+                        <td class="history__name"><?= $bet['user_name']; ?></td>
+                        <td class="history__price"><?= format_sum($bet['current_price']); ?></td>
+                        <td class="history__time">
+                            <?php
+                            /* пока без автоматического рассчета даты
+                            '5 ' .
+                            get_noun_plural_form(5, 'минуту', 'минуты', 'минут') .
+                            ' назад'
+                             время ставки */
+
+                            //get_elapsed_time($bet['date']);
+
+                            // TODO написать функцию для вывода значений, если прошло менее часа
+                            echo date('y.m.d', strtotime($bet['date'])) . ' в ' . date('H:i', strtotime($bet['date']));
+                            ?>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
             </table>
           </div>
         </div>
