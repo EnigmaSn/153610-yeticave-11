@@ -3,22 +3,13 @@
     require_once('init.php');
     require_once('data.php');
     require_once('functions.php');
+    require_once('db.php');
 
-    // подключаемся к базе данных
-    $link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
 
-    if (!$link) {
-        print("Ошибка: Невозможно подключиться к MySQL " . mysqli_connect_error());
-    } else {
-        print("Соединение установлено успешно");
-    }
-
-    // устанавливаем кодировку
-    mysqli_set_charset($link, 'utf8');
 
     // получение списка новых лотов
     $lots_result = mysqli_query($link, '
-        SELECT lots.name AS lot_name, create_date, end_date, start_price, img, start_price + step AS current_price, categories.name AS category_name
+        SELECT lots.id  AS lot_id, lots.name AS lot_name, create_date, end_date, start_price, img, start_price + step AS current_price, categories.name AS category_name
         FROM lots JOIN categories ON lots.category_id = categories.id 
         ORDER BY lots.create_date DESC;');
     // преобразование полученных данных в двумерный массив
@@ -26,33 +17,34 @@
 
     // получение списка категорий
     $categories_result = mysqli_query($link, '
-        SELECT * FROM categories;
+        SELECT id, name, symbol_code FROM categories;
     ');
     // преобразование полученных данных в двумерный массив
     $categories = mysqli_fetch_all($categories_result, MYSQLI_ASSOC);
     // ВОПРОС: в качестве url мы подставляет символьный код категории?
 
     // добавление новой категории
-    mysqli_query($link, 'INSERT INTO categories SET name = \'test-in-php\', symbol_code = \'test-in-php\';');
+    // mysqli_query($link, 'INSERT INTO categories SET name = \'test-in-php\', symbol_code = \'test-in-php\';');
+    // mysqli_query($link, 'INSERT INTO categories SET name = \'test-in-php\', symbol_code = \'test-in-php\';');
     // сначала вставляла запрос в файл queries, но там было ноль реакции,
     // но после запроса из PHP появились оба варианта
     // с чем это связано?
 
     // а категория вообще добавляется при каждом обновлении страницы
     // как это работает?
-    mysqli_query($link, '
-        INSERT INTO lots SET
-            create_date = NOW(),
-            name = \'Тестовый лот из PHP\',
-            description = \'Это ноуборд. Хороший такой. Берите\',
-            img = \'lot-1.jpg\',
-            start_price = 10999,
-            end_date = \'2019-10-04\',
-            step = 500,
-            author_id = 1,
-            winner_id = null,
-            category_id = 1;
-    ');
+//    mysqli_query($link, '
+//        INSERT INTO lots SET
+//            `create_date` = NOW(),
+//            `name` = "Тестовый лот из PHP",
+//            `description` = \'Это ноуборд. Хороший такой. Берите\',
+//            img = \'lot-1.jpg\',
+//            start_price = 10999,
+//            end_date = \'2019-10-04\',
+//            step = 500,
+//            author_id = 1,
+//            winner_id = null,
+//            category_id = 1;
+//    ');
 
     $page_content = include_template(
         'main.php',

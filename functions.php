@@ -78,3 +78,16 @@ function find_remaining_time($date) {
     return $remaining_time_arr;
 //    return $remaining_time;
 }
+
+/**
+ * Рассчитывает время, прошедшее с момента создания ставки
+ * @param $bet_time - время создания ставки
+ * @return int
+ */
+function get_elapsed_time ($bet_time) {
+    // TODO доделать
+    $current_date = time();
+    $diff = $current_date - $bet_time;
+
+    return $diff;
+}
