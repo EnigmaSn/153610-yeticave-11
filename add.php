@@ -8,13 +8,12 @@ require_once('models/models.php');
 
 // в models
 // получение списка категорий
-$categories = get_categories($link);
+$categories = get_categories($link, $categories_sql);
 
 $page_content = include_template(
     'add-main.php',
     [
         'categories' => $categories,
-
     ]
 );
 
@@ -23,7 +22,7 @@ $layout_content = include_template(
     [
         'page_content' => $page_content,
         'user_name' => $user_name,
-        'title' => 'Страница лота',
+        'title' => 'Страница добавления лота',
         'is_auth' => $is_auth,
         'categories' => $categories,
     ]
