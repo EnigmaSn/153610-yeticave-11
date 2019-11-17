@@ -30,10 +30,6 @@ function fetch_one ($link, $sql) {
  * @return array - массив списка лотов
  */
 function get_lots ($link, $lots_sql) {
-//    $lots_result = mysqli_query($link, '
-//        SELECT lots.id  AS lot_id, lots.name AS lot_name, create_date, end_date, start_price, img, start_price + step AS current_price, categories.name AS category_name
-//        FROM lots JOIN categories ON lots.category_id = categories.id
-//        ORDER BY lots.create_date DESC;');
     $ads = fetch_all($link, $lots_sql);
     return $ads;
 }
