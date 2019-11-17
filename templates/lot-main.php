@@ -4,7 +4,6 @@
               <li class="nav__item">
                   <a href="<?= $category['symbol_code']; ?>.html"><?= $category['name']; ?></a>
               </li>
-
           <?php endforeach ?>
       </ul>
     </nav>
@@ -13,7 +12,7 @@
       <div class="lot-item__content">
         <div class="lot-item__left">
           <div class="lot-item__image">
-            <img src="../img/lot-image.jpg" width="730" height="548" alt="Сноуборд">
+            <img src="../img/<?= $adv['img']; ?>" width="730" height="548" alt="Сноуборд">
           </div>
           <p class="lot-item__category">Категория: <span><?= $adv['category_id']; ?></span></p>
           <p class="lot-item__description"><?= $adv['description'] ?></p>
