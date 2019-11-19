@@ -108,23 +108,23 @@ function validate_filled ($name) {
         return "<br>Поле $name должно быть заполнено";
     }
 }
-function validate_lot_rate ($name) {
-    if ($_POST[$name] <= 0) {
-        return "<br>Начальная цена должна быть больше ноля";
-    }
-}
+//function validate_lot_rate ($name) {
+//    if ($_POST[$name] <= 0) {
+//        return "<br>Начальная цена должна быть больше ноля";
+//    }
+//}
 
 // TODO доделать валидацию даты
-function validate_lot_date ($name) {
-    // TODO Содержимое поля «дата завершения»
-    // должно быть датой в формате «ГГГГ-ММ-ДД»;
-    $date = date_create_from_format('Y-m-d');
-    if (!$date) {
-        echo "Неверный формат даты";
-    }
-    // TODO Проверять, что указанная дата больше
-    // текущей даты, хотя бы на один день.
-}
+//function validate_lot_date ($name) {
+//    // TODO Содержимое поля «дата завершения»
+//    // должно быть датой в формате «ГГГГ-ММ-ДД»;
+//    $date = date_create_from_format('Y-m-d');
+//    if (!$date) {
+//        echo "Неверный формат даты";
+//    }
+//    // TODO Проверять, что указанная дата больше
+//    // текущей даты, хотя бы на один день.
+//}
 
 // Содержимое поля «шаг ставки» должно быть целым числом больше ноля.
 function validate_lot_step ($name) {

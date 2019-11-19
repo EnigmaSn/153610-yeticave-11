@@ -19,7 +19,7 @@
             <label for="category">Категория <sup>*</sup></label>
             <select id="category" name="category">
                 <?php foreach ($categories as $category): ?>
-                    <option class="nav__item">
+                    <option class="nav__item" value="<?= $category['id']; ?>">
                         <?= $category['name']; ?>
                     </option>
                 <?php endforeach ?>
@@ -43,6 +43,7 @@
     </div>
     <div class="form__container-three">
         <div class="form__item form__item--small">
+            <?php $classname = isset($errors['lot_rate']) ?>
             <label for="lot-rate">Начальная цена <sup>*</sup></label>
             <input id="lot-rate" type="text" name="lot-rate" placeholder="0" value="<?= get_post_val('lot_rate') ?>">
             <span class="form__error">Введите начальную цену</span>
@@ -58,6 +59,14 @@
             <span class="form__error">Введите дату завершения торгов</span>
         </div>
     </div>
-    <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
+    <?php if (isset($errors)): ?>
+        <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
+        <ul>
+            <?php foreach ($errors as $val): ?>
+                <li><?= $val; ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
     <button type="submit" class="button">Добавить лот</button>
 </form>

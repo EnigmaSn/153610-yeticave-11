@@ -24,6 +24,7 @@
             'title' => 'Yeti Cave - Главная страница',
             'is_auth' => $is_auth,
             'categories' => $categories,
+            'flatpickr' => false
         ]
     );
     print($layout_content);
