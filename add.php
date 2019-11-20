@@ -29,11 +29,7 @@ if (!empty($_POST)) {
         'lot-name' => null,
         'category' => null, // TODO добавить проверку на существование id категории в базе
         'message' => null,
-        'lot-image' => function() {
-//            if () {
-//
-//            }
-        },
+        'lot-image' => null, // проверка файла прописана отдельно ниже
         'lot-rate' => function() {
             if ($_POST['lot-rate'] <= 0) {
                 return "Начальная цена должна быть больше ноля";
@@ -68,7 +64,7 @@ if (!empty($_POST)) {
     ],
     true // добавляет в результат отсутствующие ключи со значением null
     );
-
+    // TODO  Введите вместо цифр слова в поля для цены и ставки: это тоже должно считаться, как ошибка.
     foreach ($fields as $key => $value) {
         if (isset($rules[$key])) { // если в массиве правил есть правило для соответствующего поля
             $rule = $rules[$key]; // извлекат правило-функцию
@@ -83,15 +79,29 @@ if (!empty($_POST)) {
     $errors = array_filter($errors);
     var_dump($errors);
 
-    // TODO проверка файла
     var_dump($_FILES);
-    if (!empty($_FILES)) {
+    if (!empty($_FILES['lot-image']['name'])) {
+        $tmp_name = $_FILES['lot-image']['tmp_name'];
+        $path = $_FILES['lot-image']['name'];
+
+        // это наверное как-то более изящно делается?
         $img_ext = explode("/", $_FILES['lot-image']['type'])[1];
+
         $file_name = uniqid() . ".$img_ext";
-        $_POST['path'] = $file_name;
-        move_uploaded_file($_FILES['lot-image']['tmp_name'], 'uploads/' . $file_name);
-    } else {
-        return "Необходимо загрузить файл";
+
+        // через эти функции не получается, непонятно какой путь указать
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $file_type = finfo_file($finfo, $tmp_name);
+        // $file_type = mime_content_type($tmp_name);
+
+        // echo $file_type;
+
+        if ($file_type !== 'image/jpg' || $file_type !== 'image/jpeg' || $file_type !== 'image/png') {
+            $errors['file'] = "Необходимо загрузить файл в формате PNG, JPEG либо JPG";
+        } else {
+            $_POST['path'] = $file_name;
+            move_uploaded_file($_FILES['lot-image']['tmp_name'], 'uploads/' . $file_name);
+        }
     }
 
     // TODO вывести классы ошибок в шаблон
@@ -110,6 +120,7 @@ if (!empty($_POST)) {
 } else {
     // если результат запроса выполнен
     if (insert_lot($link, $_POST)) {
+        // переадресовать пользователя на страницу просмотра этого лота
         $lot_id = mysqli_insert_id($link); // возвращает из БД ID, генерируемый запросом
         header("Location: lot.php?id=" . $lot_id);
     }
