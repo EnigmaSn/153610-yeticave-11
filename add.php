@@ -84,6 +84,16 @@ if (!empty($_POST)) {
     var_dump($errors);
 
     // TODO проверка файла
+    var_dump($_FILES);
+    if (!empty($_FILES)) {
+        $img_ext = explode("/", $_FILES['lot-image']['type'])[1];
+        $file_name = uniqid() . ".$img_ext";
+        $_POST['path'] = $file_name;
+        move_uploaded_file($_FILES['lot-image']['tmp_name'], 'uploads/' . $file_name);
+    } else {
+        return "Необходимо загрузить файл";
+    }
+
     // TODO вывести классы ошибок в шаблон
     // TODO добавить валидацию select (optional?)
 
@@ -97,26 +107,13 @@ if (!empty($_POST)) {
             ]
         );
     }
-    // проверка на пустоту
-//    foreach ($required_fields as $field) {
-////        echo validate_filled($field);
-//        if (empty($field)) {
-//            $errors[$field] = "Поле должно быть заполнено";
-//        }
-//        if ($field === 'lot-step') {
-//            //if (validate_lot_step)
-//            // сделать через $rules
-//        }
-//    }
-
-    // Проверка начальной цены
-    //echo validate_lot_rate($required_fields[4]);
-
-    // Проверка даты завершения лота (доделать функцию)
-
-    // Проверка шага ставки
-    //echo validate_lot_step($required_fields[5]);
 } else {
+    // если результат запроса выполнен
+    if (insert_lot($link, $_POST)) {
+        $lot_id = mysqli_insert_id($link); // возвращает из БД ID, генерируемый запросом
+        header("Location: lot.php?id=" . $lot_id);
+    }
+
     $page_content = include_template(
         'add.php',
         [
