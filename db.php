@@ -3,9 +3,7 @@
 $link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
 
 if (!$link) {
-    print("Ошибка: Невозможно подключиться к MySQL " . mysqli_connect_error());
-} else {
-    print("Соединение установлено успешно");
+    die("Ошибка: Невозможно подключиться к MySQL: <br> " . mysqli_connect_error());
 }
 
 // устанавливаем кодировку
