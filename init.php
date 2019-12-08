@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 $is_auth = rand(0, 1);
 $user_name = 'Anna';
 date_default_timezone_set('Europe/Moscow');
