@@ -98,9 +98,32 @@ function get_bets_for_lot($link, $received_lot_id) {
 }
 
 function insert_lot($link, $lot_data) {
-    $sql = "INSERT INTO lots (create_date, name, description, img, start_price, end_date, step, author_id, category_id)
+    $sql = "INSERT INTO `lots` (create_date, name, description, img, start_price, end_date, step, author_id, category_id)
             VALUES (NOW(), ?, ?, ?, ?, ?, ?, 1, ?)";
     $stmt = db_get_prepare_stmt($link, $sql, $lot_data);
     $result = mysqli_stmt_execute($stmt); // выполняет запрос
     return $result; // true если запрос выполнен
+}
+// TODO экранироватьназвание полей и таблиц ``
+
+function check_email($link, $email) {
+    $sql = "SELECT `email`
+        FROM `users`
+        WHERE `users`.`email` = ?;";
+    $email_result = db_get_prepare_stmt($link, $sql, $data = [$email]);
+    mysqli_stmt_execute($email_result);
+    $email_result = mysqli_stmt_get_result($email_result);
+    // $email_is_exist = mysqli_fetch_all($email_result, MYSQLI_ASSOC);
+    if (empty($email_result)) {
+        return false;
+    }
+    return true;
+}
+
+function insert_user($link, $user_data) {
+    $sql = "INSERT INTO users (register_date, email, password, name, contact)
+            VALUES (NOW(), ?, ?, ?, ?)";
+    $stmt = db_get_prepare_stmt($link, $sql, $user_data);
+    $result = mysqli_stmt_execute($stmt);
+    return $result;
 }

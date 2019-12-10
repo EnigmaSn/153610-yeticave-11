@@ -11,7 +11,7 @@ $categories = get_categories($link);
 
 // проверка на отправку методом POST (сценарий вызван отправкой формы)
 if (!empty($_POST)) {
-    var_dump($_POST);
+    //var_dump($_POST);
     // массив обязательных полей
     $required_fields = [
         'lot-name',
