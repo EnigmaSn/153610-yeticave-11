@@ -1,11 +1,9 @@
 -- удаление базы, если она уже существует
 DROP DATABASE IF EXISTS yeticave;
 
--- кодировка
-DEFAULT CHARACTER SET utf8; -- набор используемых символов.
+CREATE DATABASE yeticave
+DEFAULT CHARACTER SET utf8 -- набор используемых символов.
 DEFAULT COLLATE utf8_general_ci; -- набор правил для сравнения символов в наборе.
-
-CREATE DATABASE yeticave;
 
 USE yeticave;
 
@@ -29,7 +27,7 @@ CREATE TABLE lots (
     create_date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     name VARCHAR(128) NOT NULL,
     description TEXT NOT NULL,
-    img_filename TEXT NOT NULL,
+    img TEXT NOT NULL,
     start_price INT NOT NULL,
     end_date DATETIME NOT NULL,
     step INT NOT NULL,

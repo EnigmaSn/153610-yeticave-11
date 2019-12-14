@@ -1,9 +1,7 @@
 <?php
-    require_once('helpers.php');
+    //require_once('helpers.php');
     require_once('init.php');
-    require_once('data.php');
     require_once('functions.php');
-    require_once('db.php');
     require_once('models/models.php');
 
     $ads = get_lots($link); // получение списка новых лотов

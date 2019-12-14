@@ -90,9 +90,9 @@ if (!empty($_POST)) {
         $file_name = uniqid() . ".$img_ext";
 
         // через эти функции не получается, непонятно какой путь указать
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $file_type = finfo_file($finfo, $tmp_name);
-        // $file_type = mime_content_type($tmp_name);
+//        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+//        $file_type = finfo_file($finfo, $tmp_name);
+        $file_type = mime_content_type($tmp_name);
 
         // echo $file_type;
 
@@ -116,14 +116,16 @@ if (!empty($_POST)) {
                 'categories' => $categories,
             ]
         );
+    } else {
+        // если результат запроса выполнен
+        if (insert_lot($link, $_POST)) {
+            // переадресовать пользователя на страницу просмотра этого лота
+            $lot_id = mysqli_insert_id($link); // возвращает из БД ID, генерируемый запросом
+            header("Location: lot.php?id=" . $lot_id);
+        }
     }
+
 } else {
-    // если результат запроса выполнен
-    if (insert_lot($link, $_POST)) {
-        // переадресовать пользователя на страницу просмотра этого лота
-        $lot_id = mysqli_insert_id($link); // возвращает из БД ID, генерируемый запросом
-        header("Location: lot.php?id=" . $lot_id);
-    }
 
     $page_content = include_template(
         'add.php',

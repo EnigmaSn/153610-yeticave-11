@@ -6,13 +6,11 @@ require_once('functions.php');
 require_once('models/models.php');
 
 // TODO вынести
-
 // получение списка категорий
 $categories = get_categories($link);
 $errors = [];
 
 if (!empty($_POST)) {
-    //var_dump($_POST);
     $required_fields = [
         'email',
         'password',
@@ -20,13 +18,24 @@ if (!empty($_POST)) {
         'message'
     ];
 
+    $fields = filter_input_array(INPUT_POST,
+        [
+            'email'=> FILTER_DEFAULT,
+            'password' => FILTER_DEFAULT,
+            'name' => FILTER_DEFAULT,
+            'message' => FILTER_DEFAULT
+        ], true);
+//    $email = $fields['email'];
+//    var_dump($_POST['email']);
     // TODO trim
     $rules = [
         'email' => function($link) {
             // если email валидный
             if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-                // проверяем наличие в БД
-                $email = check_email($link, $_POST['email']);
+                $email = $_POST['email'];
+                $email = check_email($link, $email);
+
+//              $email = check_email($link, $_POST['email']);
                 if ($email) {
                     return "Такой email уже существует";
                 }
@@ -39,13 +48,7 @@ if (!empty($_POST)) {
         'message' => null
     ];
 
-    $fields = filter_input_array(INPUT_POST,
-    [
-        'email'=> FILTER_DEFAULT,
-        'password' => FILTER_DEFAULT,
-        'name' => FILTER_DEFAULT,
-        'message' => FILTER_DEFAULT
-    ], true);
+
 
     foreach ($fields as $field_name => $field_value) {
         if (isset($rules[$field_name])) {
