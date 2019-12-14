@@ -104,30 +104,45 @@ function insert_lot($link, $lot_data) {
     $result = mysqli_stmt_execute($stmt); // выполняет запрос
     return $result; // true если запрос выполнен
 }
-// TODO экранироватьназвание полей и таблиц ``
 
-function check_email($link, $email) {
-    $sql = "SELECT `email`
-        FROM `users`
-        WHERE `users`.`email` = ?;";
-    // нет значения, возвразает null
-    var_dump($link);
-    var_dump($email);
-    $email_result = db_get_prepare_stmt($link, $sql, $data = [$email]);
-    mysqli_stmt_execute($email_result);
-    $email_result = mysqli_stmt_get_result($email_result);
-    // $email_is_exist = mysqli_fetch_all($email_result, MYSQLI_ASSOC);
-    if (is_null($email_result)) {
-        echo "Нет в базе";
-        return false;
+/**
+ * Проверка email на наличие в БД
+ * @param mysqli $link
+ * @param $email
+ * @return bool
+ */
+function check_email(mysqli $link, $email) : bool
+{
+    $sql = 'SELECT email FROM users WHERE email = ?';
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$email]);
+    if (!mysqli_stmt_execute($stmt)) {
+        exit(mysqli_errno($link));
     }
-    return true;
+    $result = mysqli_stmt_get_result($stmt);
+    if (mysqli_num_rows($result) > 0) {
+        return true;
+    }
+
+    return false;
 }
 
-function insert_user($link, $user_data) {
+/**
+ * Добаление пользователя в БД
+ * @param $link
+ * @return bool|null
+ */
+function insert_user($link) {
     $sql = "INSERT INTO `users` (`register_date`, `email`, `password`, `name`, `contact`)
             VALUES (NOW(), ?, ?, ?, ?)";
-    $stmt = db_get_prepare_stmt($link, $sql, $user_data);
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [
+        'email' => $_POST['email'],
+        'password' => password_hash($_POST['password'],PASSWORD_DEFAULT),
+        'name' => $_POST['name'],
+        'contact' => $_POST['message']
+    ]);
     $result = mysqli_stmt_execute($stmt);
-    return $result;
+    if ($result) {
+        return true;
+    }
+    return null;
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Форматирование цены
  * @param float $price - изначальная цена
@@ -138,4 +139,48 @@ function is_correct_length ($name, $min, $max) {
     if ($len < $min || $len > $max) {
         return "Значение  должно быть от $min до $max символов";
     }
+}
+
+// GETTERS
+function get_user_form_reg_data(array $fields): array {
+    $fields = filter_input_array(INPUT_POST,
+        [
+            'email'=> FILTER_DEFAULT,
+            'password' => FILTER_DEFAULT,
+            'name' => FILTER_DEFAULT,
+            'message' => FILTER_DEFAULT
+        ], true);
+    return $fields;
+}
+
+// VALIDATION
+function validate_reg_form(mysqli $link, array $fields) : array {
+    $errors = [];
+    $required_fields = [
+        'email',
+        'password',
+        'name',
+        'message'
+    ];
+    $errors['email'] = validate_email($link, $fields['email']);
+    foreach ($fields as $field_name => $field_value) {
+        // проверка обязательных полей на пустоту
+        if (in_array($field_name, $required_fields) && empty($field_value)) {
+            $errors[$field_name] = "Поле $field_name необходимо заполнить";
+        }
+    }
+    $errors = array_filter($errors);
+    return $errors;
+}
+
+function validate_email(mysqli $link, $email) {
+    $email_is_valid = filter_var($email, FILTER_VALIDATE_EMAIL);
+    if (!$email_is_valid) {
+        return "Введите валидный email";
+    }
+    $email_is_double = check_email($link, $email);
+    if ($email_is_double) {
+        return "Такой email уже зарегистрирован";
+    }
+    return null;
 }

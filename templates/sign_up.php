@@ -14,22 +14,22 @@
     <div class="form__item <?php if(isset($errors['email'])): ?>form__item--invalid<?php endif; ?>"> <!-- form__item--invalid -->
         <label for="email">E-mail <sup>*</sup></label>
         <input id="email" type="text" name="email" placeholder="Введите e-mail" value="<?= get_post_val('email') ?>">
-        <span class="form__error">Введите e-mail</span>
+        <span class="form__error"><?= $errors['email']; ?></span>
     </div>
     <div class="form__item <?php if(isset($errors['password'])): ?>form__item--invalid<?php endif; ?>">
         <label for="password">Пароль <sup>*</sup></label>
         <input id="password" type="password" name="password" placeholder="Введите пароль" value="<?= get_post_val('password') ?>">
-        <span class="form__error">Введите пароль</span>
+        <span class="form__error"><?= $errors['password']; ?></span>
     </div>
     <div class="form__item <?php if(isset($errors['name'])): ?>form__item--invalid<?php endif; ?>">
         <label for="name">Имя <sup>*</sup></label>
         <input id="name" type="text" name="name" placeholder="Введите имя" value="<?= get_post_val('name') ?>">
-        <span class="form__error">Введите имя</span>
+        <span class="form__error"><?= $errors['name']; ?></span>
     </div>
     <div class="form__item <?php if(isset($errors['message'])): ?>form__item--invalid<?php endif; ?>">
         <label for="message">Контактные данные <sup>*</sup></label>
         <textarea id="message" name="message" placeholder="Напишите как с вами связаться"><?= get_post_val('message') ?></textarea>
-        <span class="form__error">Напишите как с вами связаться</span>
+        <span class="form__error"><?= $errors['message']; ?></span>
     </div>
     <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
     <button type="submit" class="button">Зарегистрироваться</button>
