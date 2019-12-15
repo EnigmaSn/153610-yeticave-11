@@ -85,7 +85,7 @@ function find_remaining_time($date) {
  * @param $bet_time - время создания ставки
  * @return int
  */
-function get_elapsed_time ($bet_time) {
+function get_elapsed_time($bet_time) {
     // TODO доделать
     $current_date = time();
     $diff = $current_date - $bet_time;
@@ -98,50 +98,35 @@ function get_elapsed_time ($bet_time) {
  * @param $name - имя поля
  * @return mixed - значение переменной в случае успеха
  */
-function get_post_val ($name) {
+function get_post_val($name) {
     return filter_input(INPUT_POST, $name);
 }
 
-// Содержимое поля «начальная цена»
-// должно быть числом больше нуля.
-function validate_filled ($name) {
-    if (empty($_POST[$name])) {
-        return "<br>Поле $name должно быть заполнено";
-    }
-}
-//function validate_lot_rate ($name) {
-//    if ($_POST[$name] <= 0) {
-//        return "<br>Начальная цена должна быть больше ноля";
-//    }
-//}
-
-// TODO доделать валидацию даты
-//function validate_lot_date ($name) {
-//    // TODO Содержимое поля «дата завершения»
-//    // должно быть датой в формате «ГГГГ-ММ-ДД»;
-//    $date = date_create_from_format('Y-m-d');
-//    if (!$date) {
-//        echo "Неверный формат даты";
-//    }
-//    // TODO Проверять, что указанная дата больше
-//    // текущей даты, хотя бы на один день.
-//}
-
-// Содержимое поля «шаг ставки» должно быть целым числом больше ноля.
-function validate_lot_step ($name) {
-    if ($_POST[$name] <= 0)  {
-        echo "<br>Шаг ставки должен быть больше ноля";
-    }
-}
-
-function is_correct_length ($name, $min, $max) {
-    $len = strlen($_POST[$name]);
+function is_correct_length($name, $min, $max) {
+    $len = strlen($name);
     if ($len < $min || $len > $max) {
         return "Значение  должно быть от $min до $max символов";
     }
+    return null;
 }
 
 // GETTERS
+function get_lot_form_data($lot_data) : array {
+    // возврат значений для всех указанных полей
+    $lot_data = filter_input_array(INPUT_POST,
+        [
+            'lot-name' => FILTER_DEFAULT, // без фильтра
+            'category' => FILTER_DEFAULT,
+            'message' => FILTER_DEFAULT,
+            //'lot-image' => FILTER_DEFAULT,
+            'lot-rate' => FILTER_DEFAULT,
+            'lot-step' => FILTER_DEFAULT,
+            'lot-date' => FILTER_DEFAULT
+        ],
+        true // добавляет в результат отсутствующие ключи со значением null
+    );
+    return $lot_data;
+}
 function get_user_form_reg_data(array $fields): array {
     $fields = filter_input_array(INPUT_POST,
         [
@@ -154,6 +139,85 @@ function get_user_form_reg_data(array $fields): array {
 }
 
 // VALIDATION
+function validate_lot_form(array $lot_data, $file_data, array $categories_id) : array {
+    $errors = [];
+    $required_fields = [
+        'lot-name',
+        'category',
+        'message',
+        'lot-image',
+        'lot-rate',
+        'lot-step',
+        'lot-date'
+    ];
+    $errors['lot-name'] = validate_lot_name($lot_data['lot-name']);
+    $errors['category'] = validate_lot_category($lot_data['category'], $categories_id);
+    $errors['message'] = validate_lot_message($lot_data['message']);
+    //$errors['lot-image'];
+    $errors['lot-rate'] = validate_lot_rate($lot_data['lot-rate']);
+    $errors['lot-step'] = validate_lot_step($lot_data['lot-step']);
+    $errors['lot-date'] = validate_lot_date($lot_data['lot-date']);
+    $errors['lot-file'] = validate_lot_file($file_data);
+
+    foreach ($lot_data as $field_name => $field_value) {
+        // проверка обязательных полей на пустоту
+        if (in_array($field_name, $required_fields) && empty($field_value)) {
+            $errors[$field_name] = "Поле $field_name необходимо заполнить";
+        }
+    }
+
+    $errors = array_filter($errors);
+    return  $errors;
+}
+
+function validate_lot_category(string $category, array $categories) {
+    if (!in_array($category, $categories)) {
+        return "Такой категории не существует";
+    }
+    return null;
+}
+function validate_lot_name($data) {
+    return is_correct_length($data, 3, 128);
+}
+function validate_lot_message($data) {
+    return is_correct_length($data, 3, 3000);
+}
+function validate_lot_rate($data) {
+    if (!$data || $data <= 0) {
+        return "Начальная цена должна быть числом больше ноля";
+    }
+    return null;
+}
+function validate_lot_step($data) {
+    if (!$data || $data <= 0) {
+        return "Шаг ставки должен быть числом больше ноля";
+    }
+    return null;
+}
+function validate_lot_date($data) {
+    $format = is_date_valid($data); // boolean
+    $current_date = date_create("now");
+    $current_date = date_format($current_date, 'Y-m-d');
+    if (!$format || $data < $current_date) {
+        return "Неверная дата";
+    }
+    return null;
+}
+function validate_lot_file(array $data) {
+    if ($data['size'] === 0) {
+        return "Загрузите изображение";
+    }
+    $path = $data['tmp_name'];
+    $file_type = mime_content_type($path);
+    $allowed_types = [
+        'image/png',
+        'image/jpeg'
+    ];
+    if (!in_array($file_type, $allowed_types)) {
+        return "Необходимо загрузить файл в формате PNG, JPEG либо JPG";
+    }
+    return null;
+}
 function validate_reg_form(mysqli $link, array $fields) : array {
     $errors = [];
     $required_fields = [
@@ -183,4 +247,14 @@ function validate_email(mysqli $link, $email) {
         return "Такой email уже зарегистрирован";
     }
     return null;
+}
+
+// OTHER
+function save_lot_img(array $data) : string {
+    $file_name = $data['name'];
+    $file_ext = substr($file_name, strrpos($file_name, '.'));
+    $file_unique_name = uniqid() . $file_ext;
+    $file_new_path = "/uploads/" . $file_unique_name;
+    move_uploaded_file($file_unique_name, $file_new_path);
+    return $file_new_path;
 }

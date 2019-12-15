@@ -98,11 +98,16 @@ function get_bets_for_lot($link, $received_lot_id) {
 }
 
 function insert_lot($link, $lot_data) {
-    $sql = "INSERT INTO `lots` (`create_date`, `name`, `description`, `img`, `start_price`, `end_date`, `step`, `author_id`, `category_id`)
-            VALUES (NOW(), ?, ?, ?, ?, ?, ?, 1, ?)";
+    $sql = "INSERT INTO `lots` (`name`, `description`, `start_price`, `end_date`, `step`, `category_id`, `img`, `create_date`, `author_id`)
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), 1)";
     $stmt = db_get_prepare_stmt($link, $sql, $lot_data);
-    $result = mysqli_stmt_execute($stmt); // выполняет запрос
-    return $result; // true если запрос выполнен
+    $result = mysqli_stmt_execute($stmt); // выполняет запрос, boolean
+    if ($result) {
+        // возвращает автоматически генерируемый id последнего запроса
+        return mysqli_insert_id($link);
+    }
+    return null;
+    //return $result;
 }
 
 /**

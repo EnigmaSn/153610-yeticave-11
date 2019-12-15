@@ -5,7 +5,6 @@ require_once('data.php');
 require_once('models/models.php');
 require_once('functions.php');
 
-// получение списка категорий
 $categories = get_categories($link);
 $errors = [];
 

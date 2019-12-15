@@ -9,14 +9,10 @@ require_once('models/models.php');
 $categories = get_categories($link);
 
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
-    // echo '<br>Параметр запроса неверный либо отсутствует <br>';
     http_response_code(404);
     $page_content = include_template('error.php', ['error' => mysqli_error($link)]);
 } else {
     $received_lot_id = $_GET['id'];
-
-    // TODO использовать подготовленные запросы (db_get_prepare_stmt)
-    // где именно их нужно использовать?(
 
     $adv = get_lot_by_id($link, $received_lot_id);
     $bets = get_bets_for_lot($link, $received_lot_id);
