@@ -35,12 +35,12 @@ require_once('db.php');
  */
 function get_lots($link) {
     $sql = "
-    SELECT lots.id  AS lot_id, lots.name AS lot_name, create_date,
-    end_date, start_price, img, start_price + step AS current_price, 
-    categories.name AS category_name
-    FROM lots 
-    JOIN categories ON lots.category_id = categories.id 
-    ORDER BY lots.create_date DESC;";
+    SELECT `lots`.`id`  AS `lot_id`, `lots`.`name` AS `lot_name`, `create_date`,
+    `end_date`, `start_price`, `img`, `start_price` + `step` AS `current_price`, 
+    `categories`.`name` AS `category_name`
+    FROM `lots` 
+    JOIN `categories` ON `lots`.`category_id` = `categories`.`id` 
+    ORDER BY `lots`.`create_date` DESC;";
     $sql_result = mysqli_query($link, $sql);
     $lots = mysqli_fetch_all($sql_result, MYSQLI_ASSOC);
     return $lots;
@@ -53,7 +53,7 @@ function get_lots($link) {
  */
 function get_categories($link) {
     $sql = "
-    SELECT id, name, symbol_code FROM categories;";
+    SELECT `id`, `name`, `symbol_code` FROM `categories`;";
     $sql_result = mysqli_query($link, $sql);
     $categories = mysqli_fetch_all($sql_result, MYSQLI_ASSOC);
     return $categories;
@@ -66,11 +66,11 @@ function get_categories($link) {
  * @return array|null
  */
 function get_lot_by_id($link, $received_lot_id) {
-    $sql = "SELECT lots.id, create_date, lots.name AS lot_name, description, img, start_price + step AS current_price,
-    end_date, step, author_id, winner_id, categories.name AS category_id
-    FROM lots
-    JOIN categories ON lots.category_id = categories.id
-    WHERE lots.id = ?;";
+    $sql = "SELECT `lots`.`id`, `create_date`, `lots`.`name` AS `lot_name`, `description`, `img`, `start_price` + `step` AS `current_price`,
+    `end_date`, `step`, `author_id`, `winner_id`, `categories`.`name` AS `category_id`
+    FROM `lots`
+    JOIN `categories` ON `lots`.`category_id` = `categories`.`id`
+    WHERE `lots`.`id` = ?;";
     $adv_result = db_get_prepare_stmt($link, $sql, $data = [$received_lot_id]);
     mysqli_stmt_execute($adv_result); // выполняет подготовленный запрос
     $adv_result = mysqli_stmt_get_result($adv_result); // возвращает результат
@@ -84,12 +84,12 @@ function get_lot_by_id($link, $received_lot_id) {
  * @return array
  */
 function get_bets_for_lot($link, $received_lot_id) {
-    $sql = "SELECT bets.id, bets.date, user_id, price, lot_id,
-        users.name AS user_name, start_price + step AS current_price
-        FROM bets
-        JOIN users ON bets.user_id = users.id
-        JOIN lots ON bets.lot_id = lots.id
-        WHERE bets.lot_id = ?;";
+    $sql = "SELECT `bets`.`id`, `bets`.`date`, `user_id`, `price`, `lot_id`,
+        `users`.`name` AS `user_name`, `start_price` + `step` AS `current_price`
+        FROM `bets`
+        JOIN `users` ON `bets`.`user_id` = `users`.`id`
+        JOIN `lots` ON `bets`.`lot_id` = `lots`.`id`
+        WHERE `bets`.`lot_id` = ?;";
     $bets_result = db_get_prepare_stmt($link, $sql, $data = [$received_lot_id]);
     mysqli_stmt_execute($bets_result); // выполняет подготовленный запрос
     $bets_result = mysqli_stmt_get_result($bets_result); // возвращает результат
@@ -97,33 +97,82 @@ function get_bets_for_lot($link, $received_lot_id) {
     return $bets;
 }
 
-function insert_lot($link, $lot_data) {
-    $sql = "INSERT INTO `lots` (create_date, name, description, img, start_price, end_date, step, author_id, category_id)
-            VALUES (NOW(), ?, ?, ?, ?, ?, ?, 1, ?)";
-    $stmt = db_get_prepare_stmt($link, $sql, $lot_data);
-    $result = mysqli_stmt_execute($stmt); // выполняет запрос
-    return $result; // true если запрос выполнен
-}
-// TODO экранироватьназвание полей и таблиц ``
-
-function check_email($link, $email) {
-    $sql = "SELECT `email`
-        FROM `users`
-        WHERE `users`.`email` = ?;";
-    $email_result = db_get_prepare_stmt($link, $sql, $data = [$email]);
-    mysqli_stmt_execute($email_result);
-    $email_result = mysqli_stmt_get_result($email_result);
-    // $email_is_exist = mysqli_fetch_all($email_result, MYSQLI_ASSOC);
-    if (empty($email_result)) {
-        return false;
+function get_password(mysqli $link, string $email) : ?array {
+    $sql = "SELECT password FROM users WHERE email = ?";
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$email]);
+    if (!mysqli_stmt_execute($stmt)) {
+        exit(mysqli_errno($link));
     }
-    return true;
+    $result = mysqli_stmt_get_result($stmt);
+    $password = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+    return $password;
 }
 
-function insert_user($link, $user_data) {
-    $sql = "INSERT INTO users (register_date, email, password, name, contact)
+function get_user(mysqli $link, string $email) : array
+{
+    $sql = "SELECT id, name FROM users WHERE email = '$email'";
+    $result = mysqli_query($link, $sql);
+    if (!$result) {
+        exit(mysqli_error($link));
+    }
+
+    $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    return $user;
+}
+
+function insert_lot($link, $lot_data) {
+    $user_id = $_SESSION['user']['id'];
+    $sql = "INSERT INTO `lots` (`name`, `description`, `start_price`, `end_date`, `step`, `category_id`, `img`, `create_date`, `author_id`)
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), $user_id)";
+    $stmt = db_get_prepare_stmt($link, $sql, $lot_data);
+    $result = mysqli_stmt_execute($stmt); // выполняет запрос, boolean
+    if ($result) {
+        // возвращает автоматически генерируемый id последнего запроса
+        return mysqli_insert_id($link);
+    }
+    return null;
+    //return $result;
+}
+
+/**
+ * Проверка email на наличие в БД
+ * @param mysqli $link
+ * @param $email
+ * @return bool
+ */
+function check_email(mysqli $link, $email) : bool
+{
+    $sql = 'SELECT email FROM users WHERE email = ?';
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$email]);
+    if (!mysqli_stmt_execute($stmt)) {
+        exit(mysqli_errno($link));
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    if (mysqli_num_rows($result) > 0) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Добаление пользователя в БД
+ * @param $link
+ * @return bool|null
+ */
+function insert_user($link) {
+    $sql = "INSERT INTO `users` (`register_date`, `email`, `password`, `name`, `contact`)
             VALUES (NOW(), ?, ?, ?, ?)";
-    $stmt = db_get_prepare_stmt($link, $sql, $user_data);
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [
+        'email' => $_POST['email'],
+        'password' => password_hash($_POST['password'],PASSWORD_DEFAULT),
+        'name' => $_POST['name'],
+        'contact' => $_POST['message']
+    ]);
     $result = mysqli_stmt_execute($stmt);
-    return $result;
+    if ($result) {
+        return true;
+    }
+    return null;
 }

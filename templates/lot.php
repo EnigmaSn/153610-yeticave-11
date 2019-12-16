@@ -18,7 +18,7 @@
           <p class="lot-item__description"><?= $adv['description'] ?></p>
         </div>
         <div class="lot-item__right">
-          <div class="lot-item__state">
+          <div class="lot-item__state <?php if(!isset($_SESSION['user'])): ?>visually-hidden<?php endif; ?>">
             <div class="lot-item__timer timer
             <?php
             $hours = find_remaining_time($adv['end_date'])['hours'];
