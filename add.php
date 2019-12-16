@@ -45,13 +45,22 @@ if (!empty($_POST)) {
     );
 }
 
+// закрыть доступ, если пользователь не авторизован
+if (!isset($_SESSION['user'])) {
+    http_response_code(403);
+    $error = "Error 403 <br> Доступ запрещен";
+    $page_content = include_template('error.php', [
+        'categories' => $categories,
+        'error'      => $error
+    ]);
+}
+
 $layout_content = include_template(
     'layout.php',
     [
         'page_content' => $page_content,
-        'user_name' => $user_name,
+        //'user_name' => $user_name,
         'title' => 'Страница добавления лота',
-        'is_auth' => $is_auth,
         'categories' => $categories,
         'flatpickr' => true
     ]

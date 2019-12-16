@@ -10,7 +10,11 @@ $categories = get_categories($link);
 
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     http_response_code(404);
-    $page_content = include_template('error.php', ['error' => mysqli_error($link)]);
+    $error = "Ошибка 404<br>Данной страницы не существует на сайте.";
+    $page_content = include_template('error.php', [
+        'categories' => $categories,
+        'error' => $error
+    ]);
 } else {
     $received_lot_id = $_GET['id'];
 
@@ -28,9 +32,12 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
             ]
         );
     } else {
-        //echo 'Нет лота в БД';
         http_response_code(404);
-        $page_content = include_template('error.php', ['error' => mysqli_error($link)]);
+        $error = "Ошибка 404<br>Данной страницы не существует на сайте.";
+        $page_content = include_template('error.php', [
+            'categories' => $categories,
+            'error' => $error
+        ]);
     }
 }
 
@@ -38,9 +45,8 @@ $layout_content = include_template(
     'layout.php',
     [
         'page_content' => $page_content,
-        'user_name' => $user_name,
-        'title' => 'Страница лота',
-        'is_auth' => $is_auth,
+        //'user_name' => $user_name,
+        'title' => $adv['lot_name'] ?? 'Ошибка',
         'categories' => $categories,
         'flatpickr' => false
     ]

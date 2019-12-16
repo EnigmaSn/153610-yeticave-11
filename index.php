@@ -20,7 +20,6 @@
             'page_content' => $page_content,
             'user_name' => $user_name,
             'title' => 'Yeti Cave - Главная страница',
-            'is_auth' => $is_auth,
             'categories' => $categories,
             'flatpickr' => false
         ]

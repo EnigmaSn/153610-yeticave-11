@@ -137,6 +137,14 @@ function get_user_form_reg_data(array $fields): array {
         ], true);
     return $fields;
 }
+function get_login_form_data(array $fields): array {
+    $fields = filter_input_array(INPUT_POST,
+        [
+            'email'=> FILTER_DEFAULT,
+            'password' => FILTER_DEFAULT
+        ], true);
+    return $fields;
+}
 
 // VALIDATION
 function validate_lot_form(array $lot_data, $file_data, array $categories_id) : array {
@@ -236,7 +244,42 @@ function validate_reg_form(mysqli $link, array $fields) : array {
     $errors = array_filter($errors);
     return $errors;
 }
+function validate_login_form(mysqli $link, array $fields) : array {
+    $errors = [];
+    $required_fields = [
+        'email',
+        'password'
+    ];
+    $errors['email'] = validate_email_exist($link, $fields['email']);
+    $errors['password'] = validate_login_password($link, $fields['email'], $fields['password']);
 
+    foreach ($fields as $field_name => $field_value) {
+        if (in_array($field_name, $required_fields) && empty($field_value)) {
+            $errors[$field_name] = "Поле $field_name необходимо заполнить";
+        }
+    }
+    $errors = array_filter($errors);
+    return $errors;
+}
+function validate_email_exist(mysqli $link, string $email) : ?string {
+    $email_is_valid = filter_var($email, FILTER_VALIDATE_EMAIL);
+    if (!$email_is_valid) {
+        return "Введите валидный email";
+    }
+    $email_exists = check_email($link, $email);
+    if (!$email_exists) {
+        return "Данный email не зарегистрирован";
+    }
+    return null;
+}
+function validate_login_password(mysqli $link, string $email, string $password) : ?string {
+    $password_from_db = get_password($link, $email)['password'];
+
+    if (!password_verify($password, $password_from_db)) {
+        return "Вы ввели неверный пароль";
+    }
+    return null;
+}
 function validate_email(mysqli $link, $email) {
     $email_is_valid = filter_var($email, FILTER_VALIDATE_EMAIL);
     if (!$email_is_valid) {

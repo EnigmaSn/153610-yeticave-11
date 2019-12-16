@@ -97,9 +97,34 @@ function get_bets_for_lot($link, $received_lot_id) {
     return $bets;
 }
 
+function get_password(mysqli $link, string $email) : ?array {
+    $sql = "SELECT password FROM users WHERE email = ?";
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$email]);
+    if (!mysqli_stmt_execute($stmt)) {
+        exit(mysqli_errno($link));
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    $password = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+    return $password;
+}
+
+function get_user(mysqli $link, string $email) : array
+{
+    $sql = "SELECT id, name FROM users WHERE email = '$email'";
+    $result = mysqli_query($link, $sql);
+    if (!$result) {
+        exit(mysqli_error($link));
+    }
+
+    $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    return $user;
+}
+
 function insert_lot($link, $lot_data) {
+    $user_id = $_SESSION['user']['id'];
     $sql = "INSERT INTO `lots` (`name`, `description`, `start_price`, `end_date`, `step`, `category_id`, `img`, `create_date`, `author_id`)
-            VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), 1)";
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), $user_id)";
     $stmt = db_get_prepare_stmt($link, $sql, $lot_data);
     $result = mysqli_stmt_execute($stmt); // выполняет запрос, boolean
     if ($result) {
