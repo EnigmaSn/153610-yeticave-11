@@ -176,3 +176,51 @@ function insert_user($link) {
     }
     return null;
 }
+
+// число полученных по запросу лотов
+function get_lots_count($link, $query) {
+    // если есть поисковый GET запрос
+    if ($query) {
+        $sql = "SELECT COUNT(*) AS count_item
+        FROM lots
+        WHERE end_date > NOW()
+        AND MATCH(name, description) AGAINST(? IN BOOLEAN MODE)";
+
+        $stmt = db_get_prepare_stmt($link, $sql, $data = [$query]);
+        if (!mysqli_stmt_execute($stmt)) {
+            exit(mysqli_error($link));
+        }
+        $result = mysqli_stmt_get_result($stmt);
+        $lots_found = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        if ($lots_found['count_item'] > 0) {
+            return $lots_found['count_item'];
+        }
+
+        return "Ничего не найдено по вашему запросу";
+    }
+    return "Пустой запрос";
+}
+
+function get_searching_lots($link, $query) : array {
+    $sql = "SELECT lots.id,
+    lots.name,
+    start_price,
+    img,
+    end_date,
+    create_date,
+    categories.name AS category
+    FROM lots
+    INNER JOIN categories on lots.category_id = categories.id
+    WHERE end_date > NOW()
+    AND MATCH(lots.name, description) AGAINST(? IN BOOLEAN MODE)
+    ORDER BY create_date DESC";
+
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$query]);
+    if (!mysqli_stmt_execute($stmt)){
+        exit(mysqli_error($link));
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    return $lots;
+}

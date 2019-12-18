@@ -33,7 +33,8 @@ CREATE TABLE lots (
     step INT NOT NULL,
     author_id INT NOT NULL,
     winner_id INT,
-    category_id INT NOT NULL
+    category_id INT NOT NULL,
+    FULLTEXT INDEX `lots_search` (`name`, `description`)
 );
 
 CREATE TABLE bets (
@@ -52,5 +53,3 @@ ALTER TABLE lots ADD FOREIGN KEY(category_id) REFERENCES categories(id);
 -- внешние ключи для ставок
 ALTER TABLE bets ADD FOREIGN KEY(user_id) REFERENCES users(id);
 ALTER TABLE bets ADD FOREIGN KEY(lot_id) REFERENCES lots(id);
-
--- связи в php (в следующем задании?)
