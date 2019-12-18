@@ -12,8 +12,6 @@ if (!empty($_POST)) {
     $fields = get_user_form_reg_data($_POST);
     $errors = validate_reg_form($link, $fields);
 
-    // TODO trim (?)
-
     if (count($errors)) {
         $page_content = include_template(
             'sign_up.php',
@@ -27,7 +25,7 @@ if (!empty($_POST)) {
         // если пользователь добавлен в БД,
         // то перейти на страницу входа
         if ($is_user_added) {
-            header("Location: sign_in.php");
+            header("Location: login.php");
         }
     }
 } else {
