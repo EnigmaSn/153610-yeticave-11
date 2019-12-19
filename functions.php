@@ -118,7 +118,6 @@ function get_lot_form_data($lot_data) : array {
             'lot-name' => FILTER_DEFAULT, // без фильтра
             'category' => FILTER_DEFAULT,
             'message' => FILTER_DEFAULT,
-            //'lot-image' => FILTER_DEFAULT,
             'lot-rate' => FILTER_DEFAULT,
             'lot-step' => FILTER_DEFAULT,
             'lot-date' => FILTER_DEFAULT
@@ -126,6 +125,15 @@ function get_lot_form_data($lot_data) : array {
         true // добавляет в результат отсутствующие ключи со значением null
     );
     return $lot_data;
+}
+function get_add_bet_data($bet_data) : array {
+    $bet_data = filter_input_array( INPUT_POST,
+        [
+            'bet' => FILTER_DEFAULT,
+        ],
+        true
+    );
+    return $bet_data;
 }
 function get_user_form_reg_data(array $fields): array {
     $fields = filter_input_array(INPUT_POST,
@@ -226,6 +234,7 @@ function validate_lot_file(array $data) {
     }
     return null;
 }
+
 function validate_reg_form(mysqli $link, array $fields) : array {
     $errors = [];
     $required_fields = [
@@ -260,6 +269,28 @@ function validate_login_form(mysqli $link, array $fields) : array {
     }
     $errors = array_filter($errors);
     return $errors;
+}
+function validate_bet_form(mysqli $link, array $fields) : array {
+    $errors = [];
+    $required_fields = [
+        'cost',
+    ];
+    $errors['cost'] = validate_cost($link, $fields['cost']);
+
+    foreach ($fields as $field_name => $field_value) {
+        if (in_array($field_name, $required_fields) && empty($field_value)) {
+            $errors[$field_name] = "Поле $field_name необходимо заполнить";
+        }
+    }
+    $errors = array_filter($errors);
+
+    return $errors;
+}
+function validate_cost(mysqli $link, string $cost) {
+    if (!is_int($cost)) {
+        return "Ставка должна быть числом";
+    }
+    return null;
 }
 function validate_email_exist(mysqli $link, string $email) : ?string {
     $email_is_valid = filter_var($email, FILTER_VALIDATE_EMAIL);

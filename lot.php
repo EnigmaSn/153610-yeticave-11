@@ -21,8 +21,20 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     $adv = get_lot_by_id($link, $received_lot_id);
     $bets = get_bets_for_lot($link, $received_lot_id);
 
+    if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        $bet_from_form = filter_input(INPUT_POST, 'cost', FILTER_VALIDATE_INT);
+        if (!$bet_from_form or $bet < $lot['min_next_bet']) {
+            $error_bet = 'Введите корректную сумму';
+        } else {
+            get_add_bet($link, $bet_from_form, $received_lot_id, $_SESSION['id']);
+            $lot = get_lot($link, $received_lot_id);
+            $bets = get_bets_for_lot($link, $received_lot_id);
+        }
+    }
+
     // результат, если такой лот есть в БД
     if (!is_null($adv)) {
+
         $page_content = include_template(
             'lot.php',
             [
@@ -40,6 +52,15 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
         ]);
     }
 }
+// проверка ставки
+//$errors = [];
+//
+//if (!empty($_POST)) {
+//    $bet_data = get_add_bet_data($_POST);
+//    $errors = validate_bet_form($link, $bet_data);
+//    var_dump($bet_data);
+//}
+
 
 $layout_content = include_template(
     'layout.php',

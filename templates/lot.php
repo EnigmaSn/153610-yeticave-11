@@ -42,7 +42,7 @@
 Мин. ставка <span><?= format_sum($adv['step']) ?></span>
               </div>
             </div>
-            <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">
+            <form class="lot-item__form" action="lot.php" method="post" autocomplete="off">
               <p class="lot-item__form-item form__item form__item--invalid">
                 <label for="cost">Ваша ставка</label>
                 <input id="cost" type="text" name="cost" placeholder="12 000">
