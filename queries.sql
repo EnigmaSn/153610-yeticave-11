@@ -149,4 +149,3 @@ SELECT * FROM bets
 JOIN lots ON bets.lot_id = lots.id
 WHERE lots.id = 1
 ORDER BY bets.date DESC;
-

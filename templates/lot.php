@@ -12,7 +12,7 @@
       <div class="lot-item__content">
         <div class="lot-item__left">
           <div class="lot-item__image">
-            <img src="../img/<?= $adv['img']; ?>" width="730" height="548" alt="Сноуборд">
+            <img src="<?= $adv['img']; ?>" width="730" height="548" alt="<?= $adv['lot_name']; ?>">
           </div>
           <p class="lot-item__category">Категория: <span><?= $adv['category_id']; ?></span></p>
           <p class="lot-item__description"><?= $adv['description'] ?></p>
@@ -36,17 +36,17 @@
             <div class="lot-item__cost-state">
               <div class="lot-item__rate">
                 <span class="lot-item__amount">Текущая цена</span>
-                <span class="lot-item__cost"><?= format_sum($adv['current_price']) ?></span>
+                <span class="lot-item__cost"><?= format_sum($adv['current_price']) ?> <b class="rub">р</b></span>
               </div>
               <div class="lot-item__min-cost">
-Мин. ставка <span><?= format_sum($adv['step']) ?></span>
+Мин. ставка <span><?= format_sum($adv['min_next_bet']); ?> </span>
               </div>
             </div>
-            <form class="lot-item__form" action="lot.php" method="post" autocomplete="off">
+            <form class="lot-item__form" action="/lot.php?id=<?= $adv['id']; ?>" method="post" autocomplete="off">
               <p class="lot-item__form-item form__item form__item--invalid">
                 <label for="cost">Ваша ставка</label>
-                <input id="cost" type="text" name="cost" placeholder="12 000">
-                <span class="form__error">Введите наименование лота</span>
+                <input id="cost" type="number" name="cost" placeholder="<?= format_sum($adv['min_next_bet']); ?>">
+                <span class="form__error"><?= $error_bet; ?></span>
               </p>
               <button type="submit" class="button">Сделать ставку</button>
             </form>

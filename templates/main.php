@@ -34,7 +34,7 @@
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
                             <span class="lot__cost">
-                                    <?= format_sum($adv['current_price']); ?>
+                                    <?= format_sum($adv['current_price']); ?> <b class="rub">р</b>
                                 </span>
                         </div>
 

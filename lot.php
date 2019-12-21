@@ -21,19 +21,48 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     $adv = get_lot_by_id($link, $received_lot_id);
     $bets = get_bets_for_lot($link, $received_lot_id);
 
-    if ($_SERVER['REQUEST_METHOD'] === "POST") {
-        $bet_from_form = filter_input(INPUT_POST, 'cost', FILTER_VALIDATE_INT);
-        if (!$bet_from_form or $bet < $lot['min_next_bet']) {
-            $error_bet = 'Введите корректную сумму';
-        } else {
-            get_add_bet($link, $bet_from_form, $received_lot_id, $_SESSION['id']);
-            $lot = get_lot($link, $received_lot_id);
-            $bets = get_bets_for_lot($link, $received_lot_id);
-        }
-    }
-
     // результат, если такой лот есть в БД
     if (!is_null($adv)) {
+        //var_dump($adv);
+        $adv['min_next_bet'] = ($adv['max_bet'] ?? $adv['current_price'])
+            + $adv['step'];
+        var_dump($adv['min_next_bet']);
+        // разобраться
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            $bet_from_form = (int) get_add_bet_form_data($_POST)['cost'];
+            var_dump($bet_from_form);
+            $errors = validate_bet_form($bet_from_form, $adv['min_next_bet'], $adv['author_id']);
+
+            if (count($errors)) {
+                $page_content = include_template(
+                    'lot.php',
+                    [
+                        'categories' => $categories,
+                        'adv' => $adv,
+                        'bets' => $bets,
+                        'error_bet' => $error_bet ?? null
+                    ]
+                );
+            } else {
+                echo "Ошибок нет";
+//                var_dump((int) $_SESSION['user']['id']);
+//                var_dump($bet_from_form);
+//                var_dump($received_lot_id);
+                $bet_added = insert_bet($link, (int) $bet_from_form, (int) $received_lot_id, (int) $_SESSION['user']['id']);
+//                var_dump($bet_added);
+
+                if ($bet_added) {
+                    echo "Ставка добавлена";
+                    $lot = get_lot_by_id($link, $received_lot_id);
+                    $bets = get_bets_for_lot($link, $received_lot_id);
+
+                    //header("Location: lot.php?id=" . $_GET['id']);
+                } else {
+                    echo "Ставка НЕ добавлена";
+                }
+
+            }
+        }
 
         $page_content = include_template(
             'lot.php',
@@ -41,6 +70,7 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
                 'categories' => $categories,
                 'adv' => $adv,
                 'bets' => $bets,
+                'error_bet' => $error_bet ?? null
             ]
         );
     } else {

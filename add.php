@@ -28,6 +28,7 @@ if (!empty($_POST)) {
     } else {
         $lot_data['lot-file'] = save_lot_img($file_data); // путь загруженного файла
         $lot_id = insert_lot($link, $lot_data);
+
         // если результат запроса выполнен = получен id
         if ($lot_id) {
             // переадресовать пользователя на страницу просмотра этого лота

@@ -7,10 +7,11 @@
  */
 function format_sum(float $price) {
     $price = ceil($price);
-    $ruble_symbol = '<b class="rub">р</b>';
+    //$ruble_symbol = '<b class="rub">р</b>';
 
     $price = number_format($price, 0, '', ' ');
-    return $price . $ruble_symbol;
+    //return $price . $ruble_symbol;
+    return $price;
 };
 
 /**
@@ -126,16 +127,8 @@ function get_lot_form_data($lot_data) : array {
     );
     return $lot_data;
 }
-function get_add_bet_data($bet_data) : array {
-    $bet_data = filter_input_array( INPUT_POST,
-        [
-            'bet' => FILTER_DEFAULT,
-        ],
-        true
-    );
-    return $bet_data;
-}
-function get_user_form_reg_data(array $fields): array {
+
+function get_user_form_reg_data(array $fields) : array {
     $fields = filter_input_array(INPUT_POST,
         [
             'email'=> FILTER_DEFAULT,
@@ -145,7 +138,7 @@ function get_user_form_reg_data(array $fields): array {
         ], true);
     return $fields;
 }
-function get_login_form_data(array $fields): array {
+function get_login_form_data(array $fields) : array {
     $fields = filter_input_array(INPUT_POST,
         [
             'email'=> FILTER_DEFAULT,
@@ -153,8 +146,51 @@ function get_login_form_data(array $fields): array {
         ], true);
     return $fields;
 }
+function get_add_bet_form_data (array $fields) : array {
+    $fields = filter_input_array(INPUT_POST,
+        [
+            'cost' => FILTER_DEFAULT
+        ], true);
+    return $fields;
+}
 
 // VALIDATION
+function validate_bet_form($bet_data, $min_next_bet, $author_id) : array {
+    $errors = [];
+    $required_fields = [
+        'cost'
+    ];
+    $errors['cost'] = validate_bet($bet_data, $min_next_bet, $author_id );
+    var_dump($errors);
+//    foreach ($bet_data as $field_name => $field_value) {
+//        // проверка обязательных полей на пустоту
+//        if (in_array($field_name, $required_fields) && empty($field_value)) {
+//            $errors[$field_name] = "Поле $field_name необходимо заполнить";
+//        }
+//    }
+
+    $errors = array_filter($errors);
+    return  $errors;
+}
+function validate_bet($data, $min_next_bet, $author_id) {
+
+    if (!is_int($data)) {
+        return "Ставка должна быть числом";
+    }
+    if ($data < $min_next_bet) {
+        return "Новая ставка должна быть больше $min_next_bet";
+    }
+    if ($author_id != $_SESSION['user']['id']) {
+        return "Нельзя добавлять ставку к своим лотам";
+    }
+    if (!$data) {
+        return "Введите ставку";
+    }
+    // TODO не повторная ставка ???
+
+    return null;
+}
+
 function validate_lot_form(array $lot_data, $file_data, array $categories_id) : array {
     $errors = [];
     $required_fields = [
@@ -270,22 +306,22 @@ function validate_login_form(mysqli $link, array $fields) : array {
     $errors = array_filter($errors);
     return $errors;
 }
-function validate_bet_form(mysqli $link, array $fields) : array {
-    $errors = [];
-    $required_fields = [
-        'cost',
-    ];
-    $errors['cost'] = validate_cost($link, $fields['cost']);
-
-    foreach ($fields as $field_name => $field_value) {
-        if (in_array($field_name, $required_fields) && empty($field_value)) {
-            $errors[$field_name] = "Поле $field_name необходимо заполнить";
-        }
-    }
-    $errors = array_filter($errors);
-
-    return $errors;
-}
+//function validate_bet_form(mysqli $link, array $fields) : array {
+//    $errors = [];
+//    $required_fields = [
+//        'cost',
+//    ];
+//    $errors['cost'] = validate_cost($link, $fields['cost']);
+//
+//    foreach ($fields as $field_name => $field_value) {
+//        if (in_array($field_name, $required_fields) && empty($field_value)) {
+//            $errors[$field_name] = "Поле $field_name необходимо заполнить";
+//        }
+//    }
+//    $errors = array_filter($errors);
+//
+//    return $errors;
+//}
 function validate_cost(mysqli $link, string $cost) {
     if (!is_int($cost)) {
         return "Ставка должна быть числом";
@@ -325,10 +361,16 @@ function validate_email(mysqli $link, $email) {
 
 // OTHER
 function save_lot_img(array $data) : string {
-    $file_name = $data['name'];
-    $file_ext = substr($file_name, strrpos($file_name, '.'));
+    var_dump($data);
+    $tmp_file_name = $data['name'];
+    $tmp_file_path = $data['tmp_name'];
+    $file_ext = substr($tmp_file_name, strrpos($tmp_file_name, '.'));
     $file_unique_name = uniqid() . $file_ext;
-    $file_new_path = "/uploads/" . $file_unique_name;
-    move_uploaded_file($file_unique_name, $file_new_path);
-    return $file_new_path;
+    $file_new_full_name = "uploads/" . $file_unique_name;
+    $is_moved = move_uploaded_file($tmp_file_path, $file_new_full_name);
+    if ($is_moved) {
+        return $file_new_full_name;
+    }
+
+    return "Файл не перемещен";
 }

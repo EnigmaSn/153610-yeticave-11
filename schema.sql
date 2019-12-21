@@ -42,7 +42,8 @@ CREATE TABLE bets (
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
     price INT NOT NULL,
     user_id INT NOT NULL,
-	lot_id INT
+	lot_id INT,
+	sum INT NOT NULL
 );
 
 -- внешние ключи для лотов
