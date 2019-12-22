@@ -1,11 +1,5 @@
 <?php
 session_start();
-
-//$is_auth = false; // проверять if
-//$user_name = 'Anna';
-//$error = '';
-//$categories = [];
-//$page_content = '';
 date_default_timezone_set('Europe/Moscow');
 
 // данные для MySQL

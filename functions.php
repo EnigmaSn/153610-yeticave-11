@@ -362,7 +362,6 @@ function validate_email(mysqli $link, $email) {
 
 // OTHER
 function save_lot_img(array $data) : string {
-    var_dump($data);
     $tmp_file_name = $data['name'];
     $tmp_file_path = $data['tmp_name'];
     $file_ext = substr($tmp_file_name, strrpos($tmp_file_name, '.'));

@@ -43,7 +43,7 @@ CREATE TABLE bets (
     price INT NOT NULL,
     user_id INT NOT NULL,
 	lot_id INT,
-	sum INT NOT NULL
+	sum INT
 );
 
 -- внешние ключи для лотов

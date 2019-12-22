@@ -1,7 +1,6 @@
 <?php
 require_once('helpers.php');
 require_once('init.php');
-require_once('data.php');
 require_once('functions.php');
 require_once('db.php');
 require_once('models/models.php');
@@ -49,7 +48,7 @@ if (!empty($_POST)) {
 // закрыть доступ, если пользователь не авторизован
 if (!isset($_SESSION['user'])) {
     http_response_code(403);
-    $error = "Error 403 <br> Доступ запрещен";
+    $error = "Error 403. Доступ запрещен";
     $page_content = include_template('error.php', [
         'categories' => $categories,
         'error'      => $error
@@ -60,7 +59,6 @@ $layout_content = include_template(
     'layout.php',
     [
         'page_content' => $page_content,
-        //'user_name' => $user_name,
         'title' => 'Страница добавления лота',
         'categories' => $categories,
         'flatpickr' => true

@@ -1,7 +1,6 @@
 <?php
 require_once('helpers.php');
 require_once('init.php');
-require_once('data.php');
 require_once('functions.php');
 require_once('models/models.php');
 
@@ -22,12 +21,8 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     $adv = get_lot_by_id($link, $received_lot_id);
     $bets = get_bets_for_lot($link, $received_lot_id);
 
-//    var_dump($adv['author_id']);
-//    var_dump($_SESSION['user']['id']);
-
     // результат, если такой лот есть в БД
     if (!is_null($adv)) {
-        //var_dump($adv);
         $adv['min_next_bet'] = ($adv['max_bet'] ?? $adv['current_price'])
             + $adv['step'];
         $current_price = $adv['max_bet'];
@@ -81,15 +76,6 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
         ]);
     }
 }
-// проверка ставки
-//$errors = [];
-//
-//if (!empty($_POST)) {
-//    $bet_data = get_add_bet_data($_POST);
-//    $errors = validate_bet_form($link, $bet_data);
-//    var_dump($bet_data);
-//}
-
 
 $layout_content = include_template(
     'layout.php',
