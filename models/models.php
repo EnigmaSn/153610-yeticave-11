@@ -300,7 +300,6 @@ FROM bets b
 WHERE b.user_id = ?
 ORDER BY b.date DESC;";
 
-    //$bets = get_bets($link, $sql, $user_id);
     $stmt = db_get_prepare_stmt($link, $sql, $data = [$user_id]);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -314,18 +313,76 @@ ORDER BY b.date DESC;";
     }
     return $bets ?? [];
 }
-//function get_bets(mysqli $link, string $sql, int $id) : array {
-//    $stmp = db_get_prepare_stmt($link, $sql, [$id]);
-//    mysqli_stmt_execute($stmp);
-//    $result = mysqli_stmt_get_result($stmp);
-//    if (!$result) {
-//        exit(mysqli_error($link));
-//    }
-//
-//    $bets = mysqli_fetch_all($result, MYSQLI_ASSOC);
-//    foreach ($bets as &$bet) {
-//        $bet['time_back'] = get_bet_timeback($bet['creation_time']);
-//    }
-//
-//    return $bets;
-//}
+
+function get_lots_where_winner(mysqli $link, int $user_id) : array {
+    $sql = "SELECT id FROM lots WHERE winner_id = ?";
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$user_id]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        exit(mysqli_error($link));
+    }
+
+    $lots_win = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return array_column($lots_win, 'id') ?? [];
+}
+
+////////
+///
+///
+
+function get_win_bets_for_user(mysqli $link, array $lots_ids) : array
+{
+    $sql = "SELECT id FROM bets
+        WHERE bets.lot_id=?
+        ORDER BY sum DESC LIMIT 1;";
+    $bets_win = [];
+    foreach ($lots_ids as $id) {
+        $stmt = db_get_prepare_stmt($link, $sql, [$id]);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        if (!$result) {
+            exit(mysqli_error($link));
+        }
+        $bets_win[] = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    }
+
+    return array_column($bets_win, 'id');
+}
+
+function get_lots_without_win(mysqli $link) : array
+{
+    $sql = "SELECT id FROM lots WHERE end_date <= NOW() AND winner_id IS NULL";
+    $lots = mysqli_fetch_all(mysqli_query($link, $sql), MYSQLI_ASSOC);
+
+    return $lots ?? [];
+}
+
+function get_winner(mysqli $link, int $lot_id) : array
+{
+    $sql = "SELECT b.user_id,
+       u.name as user_name,
+       u.email,
+       l.name as lot_name
+    FROM bets b
+             INNER JOIN users u ON b.user_id = u.id
+             INNER JOIN lots l ON b.lot_id = l.id
+    WHERE lot_id = $lot_id
+    ORDER BY SUM
+        DESC
+    LIMIT 1;";
+    $result = mysqli_fetch_array(mysqli_query($link, $sql), MYSQLI_ASSOC);
+
+    return $result ?? [];
+}
+
+function add_winner_to_lot(mysqli $link, int $lot, int $winner) : bool {
+    $sql = "UPDATE lots 
+        SET winner_id = $winner 
+        WHERE id = $lot;";
+    if (!mysqli_query($link, $sql)) {
+        exit(mysqli_error($link));
+    }
+
+    return true;
+}

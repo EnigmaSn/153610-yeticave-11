@@ -19,6 +19,10 @@ if (!$user_id) {
 }
 
 $bets = get_bets_for_user($link, $user_id);
+$is_winner = get_lots_where_winner($link, $user_id);
+if (!empty($is_winner)) {
+    $win_bets = get_win_bets_for_user($link, $is_winner);
+}
 
 $page_content = include_template('my-bets.php', [
     'categories' => $categories,

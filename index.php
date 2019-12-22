@@ -3,6 +3,7 @@
     require_once('init.php');
     require_once('functions.php');
     require_once('models/models.php');
+    require_once('getwinner.php');
 
     $ads = get_lots($link); // получение списка новых лотов
     $categories = get_categories($link); // получение списка категорий

@@ -401,3 +401,65 @@ function get_bet_timeleft(string $bets_creation_time): string
 
     return $time_left;
 }
+function get_timer_state(array $lot, int $user_id = 0, $win_bets = []) : array
+{
+    $time_remaining = get_time_remaining($lot['end_date']);
+    $timer = [
+        'state'   => '',
+        'message' =>
+            sprintf("%02d", $time_remaining['d']).':'
+            .sprintf("%02d", $time_remaining['h']).':'
+            .sprintf("%02d", $time_remaining['m']),
+        'class'   => ''
+    ];
+
+    if ($time_remaining['diff'] === 0) {
+        $timer['state'] = 'timer--end';
+        $timer['message'] = 'Торги окончены';
+        $timer['class'] = 'rates__item--end';
+        if (isset($lot['bet_id']) and in_array($lot['bet_id'], $win_bets)) {
+            $timer['state'] = 'timer--win';
+            $timer['message'] = 'Ставка выиграла';
+            $timer['class'] = 'rates__item--win';
+        }
+    } elseif ($time_remaining['diff'] < 3600) {
+        $timer['state'] = 'timer--finishing';
+    }
+
+    return $timer;
+}
+
+function get_time_remaining(string $time): array
+{
+    $time_now = time();
+    $time_end = strtotime($time);
+    $time_diff = $time_end - $time_now;
+    if ($time_diff < 0) {
+        $time_diff = 0;
+    }
+
+    $time_remaining = [
+        'h'    => floor(($time_diff % 86400) / 3600),
+        'm'    => floor(($time_diff % 3600) / 60),
+        'd'    => floor($time_diff / 86400),
+        'diff' => $time_diff
+    ];
+
+    return $time_remaining;
+}
+
+function get_message(array $winner, int $lot_id) : Swift_Message
+{
+    $msg_content = include_template('email.php', [
+        'winner' => $winner,
+        'lot_id' => $lot_id
+    ]);
+
+    $message = (new Swift_Message())
+        ->setSubject('Ваша ставка победила')
+        ->setFrom(['keks@phpdemo.ru' => 'Yeticave'])
+        ->setTo([$winner['email'] => $winner['user_name']])
+        ->setBody($msg_content, 'text/html');
+
+    return $message;
+}
