@@ -248,20 +248,21 @@ function get_searching_lots($link, $query) : array {
     return $lots;
 }
 
-function insert_bet(mysqli $link, float $bet, int $lot_id, int $user_id) : ?bool {
-    $sql = "INSERT INTO bets
+function insert_bet(mysqli $link, float $bet, int $lot_id, int $user_id, int $price) : ?bool {
+    $sql = "INSERT INTO `bets`
 	SET `bets`.`date` = NOW(),
     `bets`.`sum` = ?,
     `lot_id` = ?,
-    `user_id` = ?";
+    `user_id` = ?,
+    `price` = ?";
+
     $stmt = db_get_prepare_stmt($link, $sql, $data = [
         $bet,
         $lot_id,
-        $user_id
+        $user_id,
+        $price
     ]);
 
-     var_dump($stmt);
-    //var_dump(mysqli_stmt_error($stmt));
     $result = mysqli_stmt_execute($stmt);
 
     if ($result) {
@@ -271,16 +272,33 @@ function insert_bet(mysqli $link, float $bet, int $lot_id, int $user_id) : ?bool
 }
 
 function get_bets_for_user(mysqli $link, int $user_id) : array {
-    $sql = "SELECT 
-    bets.id AS bet_id,
-    bets.lot_id,
-    bets.sum,
-    bets.creation_time
-    FROM bets
-    INNER JOIN lots ON bets.lot_id = lots.id, lots.img, lots.name
-    INNER JOIN categories c ON lots.category_id = categories.id, categories.name AS category,
-    WHERE bets.user_id = ?
-    ORDER BY bets.date DESC";
+//    $sql = "SELECT
+//    bets.id AS bet_id,
+//    bets.lot_id,
+//    bets.price,
+//    bets.date,
+//
+//    lots.img, lots.name,
+//    categories.name AS category
+//
+//    FROM bets, lots, categories
+//    INNER JOIN lots l ON bets.lot_id = l.id
+//    INNER JOIN categories c ON lots.category_id = categories.id
+//    WHERE bets.user_id = ?
+//    ORDER BY bets.date DESC;";
+    $sql = "SELECT l.img,
+       l.name,
+       b.id as bet_id,
+       c.name AS category,
+       l.end_date,
+       b.lot_id,
+       b.price,
+       b.date
+FROM bets b
+         INNER JOIN lots l ON b.lot_id = l.id
+         INNER JOIN categories c ON l.category_id = c.id
+WHERE b.user_id = ?
+ORDER BY b.date DESC;";
 
     //$bets = get_bets($link, $sql, $user_id);
     $stmt = db_get_prepare_stmt($link, $sql, $data = [$user_id]);

@@ -6,6 +6,7 @@ require_once('functions.php');
 require_once('models/models.php');
 
 $categories = get_categories($link);
+$errors = [];
 $user_id = $_SESSION['user']['id'];
 
 // если пользователь не авторизован
@@ -14,7 +15,7 @@ if (!$user_id) {
     $error = "Авторизуйтесь, чтобы посмотреть свои ставки";
     $page_content = include_template('error.php', [
         'categories' => $categories,
-        'error' => $error
+        'errors' => $errors
     ]);
 }
 
@@ -23,7 +24,7 @@ $bets = get_bets_for_user($link, $user_id);
 $page_content = include_template('my-bets.php', [
     'categories' => $categories,
     'bets' => $bets ?? null,
-    'error'      => $error,
+    'errors'      => $errors,
     'user_id'    => $user_id,
     'win_bets'   => $win_bets ?? []
 

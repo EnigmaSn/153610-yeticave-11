@@ -159,8 +159,6 @@ function get_add_bet_form_data (array $fields) : array {
 function validate_bet_form($bet_data, $min_next_bet, $author_id) : array {
     $errors = [];
     $errors['cost'] = validate_bet($bet_data, $min_next_bet, $author_id );
-    var_dump($errors);
-
     $errors = array_filter($errors);
     return  $errors;
 }
@@ -172,13 +170,15 @@ function validate_bet($data, $min_next_bet, $author_id) {
     if ($data < $min_next_bet) {
         return "Новая ставка должна быть больше $min_next_bet";
     }
-    if ($author_id != $_SESSION['user']['id']) {
+
+    if ($author_id === (int) $_SESSION['user']['id']) {
         return "Нельзя добавлять ставку к своим лотам";
     }
     if (!$data) {
         return "Введите ставку";
     }
     // TODO не повторная ставка ???
+    // проверять последнюю ставку на повтор user id
 
     return null;
 }

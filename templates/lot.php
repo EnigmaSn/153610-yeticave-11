@@ -29,17 +29,24 @@
             <div class="lot-item__cost-state">
               <div class="lot-item__rate">
                 <span class="lot-item__amount">Текущая цена</span>
-                <span class="lot-item__cost"><?= format_sum($adv['current_price']) ?> <b class="rub">р</b></span>
+                <span class="lot-item__cost">
+                    <?php $current_price = $adv['max_bet'] ??
+                        $adv['current_price'];
+                    echo format_sum($current_price); ?>
+                <?//= format_sum($adv['current_price']); ?> <b class="rub">р</b>
+                </span>
               </div>
               <div class="lot-item__min-cost">
 Мин. ставка <span><?= format_sum($adv['min_next_bet']); ?> </span>
               </div>
             </div>
-            <form class="lot-item__form" action="/lot.php?id=<?= $adv['id']; ?>" method="post" autocomplete="off">
-              <p class="lot-item__form-item form__item form__item--invalid">
+
+            <?php $form_error = count($errors) ? "form--invalid" : ""; ?>
+            <form class="lot-item__form <?= $form_error; ?>" action="/lot.php?id=<?= $adv['id']; ?>" method="post" autocomplete="off">
+              <p class="lot-item__form-item form__item <?php if(isset($errors['cost'])): ?>form__item--invalid<?php endif; ?>">
                 <label for="cost">Ваша ставка</label>
                 <input id="cost" type="number" name="cost" placeholder="<?= format_sum($adv['min_next_bet']); ?>">
-                <span class="form__error"><?= $error_bet; ?></span>
+                <span class="form__error"><?= $errors['cost'] ?? null; ?></span>
               </p>
               <button type="submit" class="button">Сделать ставку</button>
             </form>
@@ -50,7 +57,7 @@
                 <?php foreach ($bets as $bet): ?>
                     <tr class="history__item">
                         <td class="history__name"><?= $bet['user_name']; ?></td>
-                        <td class="history__price"><?= format_sum($bet['current_price']); ?></td>
+                        <td class="history__price"><?= format_sum((float)$bet['price']); ?></td>
                         <td class="history__time">
                             <?php
                             /* пока без автоматического рассчета даты

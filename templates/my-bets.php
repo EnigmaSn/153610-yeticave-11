@@ -3,9 +3,9 @@
 <section class="rates container">
     <h2>Мои ставки</h2>
     <?php foreach ($bets as $bet): ?>
-        <?php $timer = get_timer_state($bet, $user_id, $win_bets); ?>
+        <?php //$timer = get_bet_timeleft($bet, $user_id, $win_bets); ?>
         <tr class="rates__item
-            <?= $timer['class']; ?>">
+            <?php //$timer['class']; ?>">
             <td class=" rates__info">
                 <div class="rates__img">
                     <img src="<?= $bet['img']; ?>" width="54" height="40"
@@ -19,12 +19,12 @@
                 <?= $bet['category']; ?>
             </td>
             <td class="rates__timer">
-                <div class="timer <?= $timer['state']; ?>">
-                    <?= $timer['message']; ?>
+                <div class="timer <?php //$timer['state']; ?>">
+                    <?php //$timer['message']; ?>
                 </div>
             </td>
             <td class="rates__price">
-                <?= price_format($bet['sum'])
+                <?= format_sum($bet['price'])
                 .' р'; ?>
             </td>
             <td class="rates__time">
