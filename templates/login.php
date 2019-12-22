@@ -1,12 +1,5 @@
-<nav class="nav">
-    <ul class="nav__list container">
-        <?php foreach ($categories as $category): ?>
-            <li class="nav__item">
-                <a href="<?= $category['symbol_code']; ?>.html"><?= $category['name']; ?></a>
-            </li>
-        <?php endforeach ?>
-    </ul>
-</nav>
+<?= include_template('nav.php', ['categories' => $categories]) ?>
+
 <?php $form_error = count($errors) ? "form--invalid" : ""; ?>
 
 <form class="form container <?= $form_error; ?>" action="login.php" method="post"> <!-- form--invalid -->

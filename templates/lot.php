@@ -1,13 +1,6 @@
-<nav class="nav">
-      <ul class="nav__list container">
-          <?php foreach ($categories as $category): ?>
-              <li class="nav__item">
-                  <a href="<?= $category['symbol_code']; ?>.html"><?= $category['name']; ?></a>
-              </li>
-          <?php endforeach ?>
-      </ul>
-    </nav>
-    <section class="lot-item container">
+<?= include_template('nav.php', ['categories' => $categories]) ?>
+
+<section class="lot-item container">
       <h2><?= $adv['lot_name']; ?></h2>
       <div class="lot-item__content">
         <div class="lot-item__left">

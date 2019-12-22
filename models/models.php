@@ -269,3 +269,45 @@ function insert_bet(mysqli $link, float $bet, int $lot_id, int $user_id) : ?bool
     }
     return null;
 }
+
+function get_bets_for_user(mysqli $link, int $user_id) : array {
+    $sql = "SELECT 
+    bets.id AS bet_id,
+    bets.lot_id,
+    bets.sum,
+    bets.creation_time
+    FROM bets
+    INNER JOIN lots ON bets.lot_id = lots.id, lots.img, lots.name
+    INNER JOIN categories c ON lots.category_id = categories.id, categories.name AS category,
+    WHERE bets.user_id = ?
+    ORDER BY bets.date DESC";
+
+    //$bets = get_bets($link, $sql, $user_id);
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$user_id]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        exit(mysqli_error($link));
+    }
+
+    $bets = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    foreach ($bets as &$bet) {
+        $bet['time_back'] = get_bet_timeleft($bet['date']);
+    }
+    return $bets ?? [];
+}
+//function get_bets(mysqli $link, string $sql, int $id) : array {
+//    $stmp = db_get_prepare_stmt($link, $sql, [$id]);
+//    mysqli_stmt_execute($stmp);
+//    $result = mysqli_stmt_get_result($stmp);
+//    if (!$result) {
+//        exit(mysqli_error($link));
+//    }
+//
+//    $bets = mysqli_fetch_all($result, MYSQLI_ASSOC);
+//    foreach ($bets as &$bet) {
+//        $bet['time_back'] = get_bet_timeback($bet['creation_time']);
+//    }
+//
+//    return $bets;
+//}

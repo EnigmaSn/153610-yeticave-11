@@ -154,20 +154,12 @@ function get_add_bet_form_data (array $fields) : array {
     return $fields;
 }
 
+
 // VALIDATION
 function validate_bet_form($bet_data, $min_next_bet, $author_id) : array {
     $errors = [];
-    $required_fields = [
-        'cost'
-    ];
     $errors['cost'] = validate_bet($bet_data, $min_next_bet, $author_id );
     var_dump($errors);
-//    foreach ($bet_data as $field_name => $field_value) {
-//        // проверка обязательных полей на пустоту
-//        if (in_array($field_name, $required_fields) && empty($field_value)) {
-//            $errors[$field_name] = "Поле $field_name необходимо заполнить";
-//        }
-//    }
 
     $errors = array_filter($errors);
     return  $errors;
@@ -333,6 +325,9 @@ function validate_email_exist(mysqli $link, string $email) : ?string {
     if (!$email_is_valid) {
         return "Введите валидный email";
     }
+    if(!in_null(is_correct_length($email, 3, 128))) {
+        return is_correct_length($email, 3, 128);
+    }
     $email_exists = check_email($link, $email);
     if (!$email_exists) {
         return "Данный email не зарегистрирован";
@@ -341,7 +336,9 @@ function validate_email_exist(mysqli $link, string $email) : ?string {
 }
 function validate_login_password(mysqli $link, string $email, string $password) : ?string {
     $password_from_db = get_password($link, $email)['password'];
-
+    if(!in_null(is_correct_length($email, 3, 128))) {
+        return is_correct_length($email, 3, 128);
+    }
     if (!password_verify($password, $password_from_db)) {
         return "Вы ввели неверный пароль";
     }
@@ -349,6 +346,9 @@ function validate_login_password(mysqli $link, string $email, string $password) 
 }
 function validate_email(mysqli $link, $email) {
     $email_is_valid = filter_var($email, FILTER_VALIDATE_EMAIL);
+    if(!in_null(is_correct_length($email, 3, 128))) {
+        return is_correct_length($email, 3, 128);
+    }
     if (!$email_is_valid) {
         return "Введите валидный email";
     }
@@ -373,4 +373,30 @@ function save_lot_img(array $data) : string {
     }
 
     return "Файл не перемещен";
+}
+function get_bet_timeleft(string $bets_creation_time): string
+{
+    $now = time();
+    $bet_time = strtotime($bets_creation_time);
+    $diff_time = $now - $bet_time;
+    $time_left = '';
+    if ($diff_time < 59) {
+        $time_left = $diff_time.' '.get_noun_plural_form($diff_time,
+                'секунда', 'секунды', 'секунд').' назад';
+    } elseif ($diff_time < 3600) {
+        $diff_time = floor($diff_time / 60);
+        $time_left = $diff_time.' '.get_noun_plural_form($diff_time,
+                'минута', 'минуты', 'минут').' назад';
+    } elseif ($diff_time < 86400) {
+        $diff_time = floor($diff_time / 3600);
+        $time_left = $diff_time.' '.get_noun_plural_form($diff_time,
+                'час', 'часа', 'часов').' назад';
+    } elseif ($diff_time < 172800) {
+        $diff_time = floor($diff_time / 86400);
+        $time_left = date('Вчера в H:i', $bet_time);
+    } elseif ($diff_time > 86400) {
+        $time_left = date('d.m.y в H:i', $bet_time);
+    }
+
+    return $time_left;
 }
