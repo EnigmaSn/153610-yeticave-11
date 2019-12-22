@@ -2,6 +2,7 @@
 
 <section class="rates container">
     <h2>Мои ставки</h2>
+    <table class="rates__list">
     <?php foreach ($bets as $bet): ?>
         <?php //$timer = get_bet_timeleft($bet, $user_id, $win_bets); ?>
         <tr class="rates__item
@@ -19,8 +20,15 @@
                 <?= $bet['category']; ?>
             </td>
             <td class="rates__timer">
-                <div class="timer <?php //$timer['state']; ?>">
-                    <?php //$timer['message']; ?>
+                <div class="timer <?php $hours = find_remaining_time($bet['end_date'])['hours'];
+                if ($hours === 0) {
+                    echo 'timer--finishing';
+                }
+                ?>">
+                    <?=
+                    esc(find_remaining_time($bet['end_date'])['hours'] . ':' .
+                        find_remaining_time($bet['end_date'])['minutes']);
+                    ?>
                 </div>
             </td>
             <td class="rates__price">
@@ -32,4 +40,5 @@
             </td>
         </tr>
     <?php endforeach; ?>
+    </table>
 </section>

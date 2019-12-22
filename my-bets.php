@@ -20,6 +20,7 @@ if (!$user_id) {
 }
 
 $bets = get_bets_for_user($link, $user_id);
+var_dump($bets);
 
 $page_content = include_template('my-bets.php', [
     'categories' => $categories,
