@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title><?= $title; ?></title>
+    <title><?= esc($title); ?></title>
     <link href="../css/normalize.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
     <?php if ($flatpickr): ?>
@@ -15,7 +15,11 @@
     <header class="main-header">
         <div class="main-header__container container">
             <h1 class="visually-hidden">YetiCave</h1>
-            <a class="main-header__logo">
+            <a class="main-header__logo" <?php
+            if ($_SERVER['PHP_SELF'] !== '/index.php') {
+                echo 'href="/index.php"';
+            }; ?>
+            >
                 <img src="../img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
             </a>
             <form class="main-header__search" method="get" action="search.php" autocomplete="off">
@@ -47,7 +51,10 @@
         </div>
     </header>
 
-    <main class="container">
+    <main class="<?php
+    if ($_SERVER['PHP_SELF'] == '/index.php') {
+        echo 'container';
+    }; ?>">
         <?= $page_content; ?>
     </main>
 </div>

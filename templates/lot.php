@@ -1,11 +1,11 @@
 <?= include_template('nav.php', ['categories' => $categories]) ?>
 
 <section class="lot-item container">
-      <h2><?= $adv['lot_name']; ?></h2>
+      <h2><?= esc($adv['lot_name']); ?></h2>
       <div class="lot-item__content">
         <div class="lot-item__left">
           <div class="lot-item__image">
-            <img src="<?= $adv['img']; ?>" width="730" height="548" alt="<?= $adv['lot_name']; ?>">
+            <img src="uploads/<?= $adv['img']; ?>" width="730" height="548" alt="<?= $adv['lot_name']; ?>">
           </div>
           <p class="lot-item__category">Категория: <span><?= $adv['category_id']; ?></span></p>
           <p class="lot-item__description"><?= $adv['description'] ?></p>

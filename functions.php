@@ -100,7 +100,8 @@ function get_elapsed_time($bet_time) {
  * @return mixed - значение переменной в случае успеха
  */
 function get_post_val($name) {
-    return filter_input(INPUT_POST, $name);
+    $value = filter_input(INPUT_POST, $name);
+    return esc($value);
 }
 
 function is_correct_length($name, $min, $max) {
@@ -325,7 +326,7 @@ function validate_email_exist(mysqli $link, string $email) : ?string {
     if (!$email_is_valid) {
         return "Введите валидный email";
     }
-    if(!in_null(is_correct_length($email, 3, 128))) {
+    if(!is_null(is_correct_length($email, 3, 128))) {
         return is_correct_length($email, 3, 128);
     }
     $email_exists = check_email($link, $email);
@@ -336,7 +337,7 @@ function validate_email_exist(mysqli $link, string $email) : ?string {
 }
 function validate_login_password(mysqli $link, string $email, string $password) : ?string {
     $password_from_db = get_password($link, $email)['password'];
-    if(!in_null(is_correct_length($email, 3, 128))) {
+    if(!is_null(is_correct_length($email, 3, 128))) {
         return is_correct_length($email, 3, 128);
     }
     if (!password_verify($password, $password_from_db)) {
@@ -346,7 +347,7 @@ function validate_login_password(mysqli $link, string $email, string $password) 
 }
 function validate_email(mysqli $link, $email) {
     $email_is_valid = filter_var($email, FILTER_VALIDATE_EMAIL);
-    if(!in_null(is_correct_length($email, 3, 128))) {
+    if(!is_null(is_correct_length($email, 3, 128))) {
         return is_correct_length($email, 3, 128);
     }
     if (!$email_is_valid) {
@@ -369,7 +370,8 @@ function save_lot_img(array $data) : string {
     $file_new_full_name = "uploads/" . $file_unique_name;
     $is_moved = move_uploaded_file($tmp_file_path, $file_new_full_name);
     if ($is_moved) {
-        return $file_new_full_name;
+        //return $file_new_full_name;
+        return $file_unique_name;
     }
 
     return "Файл не перемещен";

@@ -12,7 +12,7 @@
                          alt="<?= $bet['name']; ?>">
                 </div>
                 <h3 class="rates__title"><a
-                        href="/lot.php/?id=<?= $bet['lot_id']; ?>"><?= $bet['name']; ?></a>
+                        href="/lot.php?id=<?= $bet['lot_id']; ?>"><?= $bet['name']; ?></a>
                 </h3>
             </td>
             <td class="rates__category">
