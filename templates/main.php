@@ -34,7 +34,10 @@
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
                             <span class="lot__cost">
-                                    <?= esc(format_sum($adv['current_price'])); ?> <b class="rub">р</b>
+                                    <?php
+                                    $current_price = $adv['max_bet'] ??
+                                        $adv['current_price'];
+                                    echo esc(format_sum($current_price)); ?> <b class="rub">р</b>
                                 </span>
                         </div>
 

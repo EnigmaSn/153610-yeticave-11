@@ -9,7 +9,7 @@
             <?php //$timer['class']; ?>">
             <td class=" rates__info">
                 <div class="rates__img">
-                    <img src="<?= $bet['img']; ?>" width="54" height="40"
+                    <img src="uploads/<?= $bet['img']; ?>" width="54" height="40"
                          alt="<?= $bet['name']; ?>">
                 </div>
                 <h3 class="rates__title"><a

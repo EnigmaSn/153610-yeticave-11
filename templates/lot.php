@@ -11,7 +11,7 @@
           <p class="lot-item__description"><?= $adv['description'] ?></p>
         </div>
         <div class="lot-item__right">
-          <div class="lot-item__state <?php if(!isset($_SESSION['user'])): ?>visually-hidden<?php endif; ?>">
+          <div class="lot-item__state">
             <div class="lot-item__timer timer
             <?php
             $hours = find_remaining_time($adv['end_date'])['hours'];
@@ -42,7 +42,7 @@
             </div>
 
             <?php $form_error = count($errors) ? "form--invalid" : ""; ?>
-            <form class="lot-item__form <?= $form_error; ?>" action="/lot.php?id=<?= $adv['id']; ?>" method="post" autocomplete="off">
+            <form class="lot-item__form <?php if(!isset($_SESSION['user']) || $adv['author_id'] === (int) $_SESSION['user']['id']): ?>visually-hidden<?php endif; ?> <?= $form_error; ?>" action="/lot.php?id=<?= $adv['id']; ?>" method="post" autocomplete="off">
               <p class="lot-item__form-item form__item <?php if(isset($errors['cost'])): ?>form__item--invalid<?php endif; ?>">
                 <label for="cost">Ваша ставка</label>
                 <input id="cost" type="number" name="cost" placeholder="<?= format_sum($adv['min_next_bet']); ?>">
