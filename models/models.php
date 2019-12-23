@@ -2,33 +2,6 @@
 require_once('db.php');
 
 /**
- * Функция возвращает массив ассоциативных массивов
- * @param $link - ресурс соединения
- * @param $sql - запрос
- * @return array
- */
-//function fetch_all($link, $sql, $params = []) {
-//    if ($params) {
-//
-//    }
-//    $sql_result = mysqli_query($link, $sql);
-//    $arr = mysqli_fetch_all($sql_result, MYSQLI_ASSOC);
-//    return $arr;
-//}
-
-/**
- * Функция возвращает один ассоциативный массив (конкретная строка из БД)
- * @param $link - ресурс соединения
- * @param $sql - запрос
- * @return array
- */
-//function fetch_one($link, $sql) {
-//    $sql_result = mysqli_query($link, $sql);
-//    $arr = mysqli_fetch_array($sql_result, MYSQLI_ASSOC);
-//    return $arr;
-//}
-
-/**
  * Получение списка новых лотов
  * @param $link - ресурс соединения (уточнить тип данных)
  * @return array - массив списка лотов
@@ -82,11 +55,6 @@ function get_lot_by_id($link, $received_lot_id) {
     $adv_result = mysqli_stmt_get_result($adv_result); // возвращает результат
     $adv = mysqli_fetch_array($adv_result, MYSQLI_ASSOC);
 
-//    if (!empty($adv)) {
-//        $adv['min_next_bet'] = ($adv['max_bet'] ?? $adv['start_price'])
-//            + $adv['bet_step'];
-//    }
-
     return $adv ?? [];
 }
 /**
@@ -137,8 +105,6 @@ function insert_lot($link, $lot_data) {
     $user_id = $_SESSION['user']['id'];
     $sql = "INSERT INTO `lots` (`name`, `description`, `start_price`, `end_date`, `step`, `category_id`, `img`, `create_date`, `author_id`)
             VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)";
-    //$stmt = db_get_prepare_stmt($link, $sql, $lot_data);
-    //$stmt = db_get_prepare_stmt($link, $sql, ['wewew', '232', 232, '2019-12-31', 23, '1', '/uploads/5dfd1c3ce5b77.png', 1]);
     $stmt = db_get_prepare_stmt($link, $sql, $data = [
         $lot_data['lot-name'],
         $lot_data['message'],
@@ -155,7 +121,6 @@ function insert_lot($link, $lot_data) {
         return mysqli_insert_id($link);
     }
     return null;
-    //return $result;
 }
 
 /**
@@ -224,7 +189,8 @@ function get_lots_count($link, $query) {
     return "Пустой запрос";
 }
 
-function get_searching_lots($link, $query) : array {
+function get_searching_lots($link, $query, int $limit,
+                            int $offset) : array {
     $sql = "SELECT lots.id,
     lots.name,
     start_price,
@@ -236,7 +202,8 @@ function get_searching_lots($link, $query) : array {
     INNER JOIN categories on lots.category_id = categories.id
     WHERE end_date > NOW()
     AND MATCH(lots.name, description) AGAINST(? IN BOOLEAN MODE)
-    ORDER BY create_date DESC";
+    ORDER BY create_date DESC
+    LIMIT $limit OFFSET $offset";
 
     $stmt = db_get_prepare_stmt($link, $sql, $data = [$query]);
     if (!mysqli_stmt_execute($stmt)){
@@ -272,33 +239,19 @@ function insert_bet(mysqli $link, float $bet, int $lot_id, int $user_id, int $pr
 }
 
 function get_bets_for_user(mysqli $link, int $user_id) : array {
-//    $sql = "SELECT
-//    bets.id AS bet_id,
-//    bets.lot_id,
-//    bets.price,
-//    bets.date,
-//
-//    lots.img, lots.name,
-//    categories.name AS category
-//
-//    FROM bets, lots, categories
-//    INNER JOIN lots l ON bets.lot_id = l.id
-//    INNER JOIN categories c ON lots.category_id = categories.id
-//    WHERE bets.user_id = ?
-//    ORDER BY bets.date DESC;";
     $sql = "SELECT l.img,
-       l.name,
-       b.id as bet_id,
-       c.name AS category,
-       l.end_date,
-       b.lot_id,
-       b.price,
-       b.date
-FROM bets b
-         INNER JOIN lots l ON b.lot_id = l.id
-         INNER JOIN categories c ON l.category_id = c.id
-WHERE b.user_id = ?
-ORDER BY b.date DESC;";
+        l.name,
+        b.id as bet_id,
+        c.name AS category,
+        l.end_date,
+        b.lot_id,
+        b.price,
+        b.date
+        FROM bets b
+                 INNER JOIN lots l ON b.lot_id = l.id
+                 INNER JOIN categories c ON l.category_id = c.id
+        WHERE b.user_id = ?
+        ORDER BY b.date DESC;";
 
     $stmt = db_get_prepare_stmt($link, $sql, $data = [$user_id]);
     mysqli_stmt_execute($stmt);
@@ -326,10 +279,6 @@ function get_lots_where_winner(mysqli $link, int $user_id) : array {
     $lots_win = mysqli_fetch_all($result, MYSQLI_ASSOC);
     return array_column($lots_win, 'id') ?? [];
 }
-
-////////
-///
-///
 
 function get_win_bets_for_user(mysqli $link, array $lots_ids) : array
 {
@@ -385,4 +334,69 @@ function add_winner_to_lot(mysqli $link, int $lot, int $winner) : bool {
     }
 
     return true;
+}
+
+function get_lots_by_cat_count(mysqli $link, int $category) {
+    if ($category !== 0) {
+        $sql = "SELECT COUNT(*) as count_item
+        FROM lots
+        WHERE category_id = ?;";
+        $stmt = db_get_prepare_stmt($link, $sql, [$category]);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        if (!$result) {
+            exit(mysqli_error($link));
+        }
+
+        $lots_found = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        if ($lots_found['count_item'] > 0) {
+            return $lots_found['count_item'];
+        }
+
+        return 'Нет лотов по вашему запросу';
+    }
+
+    return 'Ошибка';
+}
+
+function get_lots_by_category(mysqli $link, int $category, int $limit, int $offset) : array {
+    $sql = "
+        SELECT l.id,
+               l.name,
+               l.start_price,
+               l.img,
+               l.end_date,
+               c.name     AS category,
+               MAX(b.price) as max_bet
+        FROM lots l
+                 INNER JOIN categories c ON l.category_id = c.id
+                 LEFT JOIN bets b ON l.id = b.lot_id
+        WHERE l.category_id = ?
+        GROUP BY l.id, l.create_date
+        ORDER BY l.create_date DESC
+        LIMIT $limit OFFSET $offset;";
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$category]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if (!$result) {
+        exit(mysqli_error($link));
+    }
+
+    return $result = mysqli_fetch_all($result, MYSQLI_ASSOC) ?? [];
+}
+
+function get_count_bets_for_lot(mysqli $link, int $lot_id): int
+{
+    $sql = "SELECT COUNT(*) FROM bets WHERE lot_id = ?";
+    $stmt = db_get_prepare_stmt($link, $sql, [$lot_id]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        exit(mysqli_error($link));
+    }
+
+    $count = mysqli_fetch_array($result, MYSQLI_NUM);
+
+    return $count[0] ?? 0;
 }

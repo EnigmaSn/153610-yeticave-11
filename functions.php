@@ -369,7 +369,6 @@ function save_lot_img(array $data) : string {
     $file_new_full_name = "uploads/" . $file_unique_name;
     $is_moved = move_uploaded_file($tmp_file_path, $file_new_full_name);
     if ($is_moved) {
-        //return $file_new_full_name;
         return $file_unique_name;
     }
 

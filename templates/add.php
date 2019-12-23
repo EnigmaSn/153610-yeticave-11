@@ -4,11 +4,10 @@
 <form class="form form--add-lot container <?= esc($form_error); ?>" action="add.php" method="post" enctype="multipart/form-data">
     <h2>Добавление лота</h2>
     <div class="form__container-two">
-        <?php // TODO массив (целиком form__item) ?>
         <div class="form__item <?php if(isset($errors['lot-name'])): ?>form__item--invalid<?php endif; ?>">
             <label for="lot-name">Наименование <sup>*</sup></label>
             <input id="lot-name" type="text" name="lot-name" placeholder="Введите наименование лота" value="<?= get_post_val('lot-name') ?>">
-            <span class="form__error"><?= esc($errors['lot-name']); ?></span>
+            <span class="form__error"><?= (isset($errors['lot-name']) ? esc($errors['lot-name']) : null); ?></span>
         </div>
         <div class="form__item <?php if(isset($errors['category'])): ?>form__item--invalid<?php endif; ?>">
             <label for="category">Категория <sup>*</sup></label>
@@ -19,7 +18,9 @@
                     </option>
                 <?php endforeach ?>
             </select>
-            <span class="form__error"><?= esc($errors['category']); ?></span>
+            <span class="form__error">
+                <?= (isset($errors['category']) ? esc($errors['category']) : null); ?>
+            </span>
         </div>
     </div>
     <div class="form__item form__item--wide <?php if(isset($errors['message'])): ?>form__item--invalid<?php endif; ?>">

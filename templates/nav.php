@@ -1,9 +1,13 @@
 <nav class="nav">
     <ul class="nav__list container">
-        <?php foreach ($categories as $category): ?>
-            <li class="nav__item">
-                <a href="<?= $category['symbol_code']; ?>.html"><?= $category['name']; ?></a>
-            </li>
-        <?php endforeach ?>
+        <?php
+        if (is_array($categories)):
+            foreach ($categories as $category): ?>
+                <li class="nav__item">
+                    <a href="/all-lots.php?catid=<?= $category['id']; ?>">
+                        <?= $category['name']; ?></a>
+                </li>
+            <?php endforeach; else: echo $categories; ?>
+        <?php endif; ?>
     </ul>
 </nav>
