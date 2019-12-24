@@ -16,8 +16,12 @@ if (is_int($lots_count)) {
     $pages_count = intval(ceil($lots_count / $item_per_page));
     $offset = ($cur_page - 1) * $item_per_page;
     $pages = range(1, $pages_count);
-    $lots = get_lots_by_category($link, $category_id,
-        $item_per_page, $offset);
+    $lots = get_lots_by_category(
+        $link,
+        $category_id,
+        $item_per_page,
+        $offset
+    );
     foreach ($lots as &$lot) {
         $lot['bet_count'] = get_count_bets_for_lot($link, $lot['id']);
     }

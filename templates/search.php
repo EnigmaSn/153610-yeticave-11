@@ -3,7 +3,8 @@
 <div class="container">
     <section class="lots">
         <h2>Результаты поиска по запросу «<span><?= $search_query; ?></span>»</h2>
-        <?php if (is_array($lots)): ; ?>
+        <?php if (is_array($lots)) :
+            ; ?>
             <ul class="lots__list">
                 <?php foreach ($lots as $lot) : ?>
                     <li class="lots__item lot">
@@ -22,10 +23,10 @@
                                 <div class="lot__rate">
                                     <span class="lot__amount">Стартовая цена</span>
                                     <span class="lot__cost"><?php
-                                        if (isset($lot['start_price'])) {
-                                            echo format_sum($lot['start_price']);
-                                        }
-                                        ?></span>
+                                    if (isset($lot['start_price'])) {
+                                        echo format_sum($lot['start_price']);
+                                    }
+                                    ?></span>
                                 </div>
                                 <div class="lot__timer timer <?php
                                 if (isset($lot['end_date'])) {
@@ -43,7 +44,7 @@
                     </li>
                 <?php endforeach; ?>
             </ul>
-        <?php else: ?>
+        <?php else : ?>
             <h3><?= $error; ?></h3>
         <?php endif; ?>
     </section>

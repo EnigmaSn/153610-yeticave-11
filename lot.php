@@ -36,12 +36,19 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
 
         // добавление ставки только если лот существует
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
-
             $bet_from_form = (int)get_add_bet_form_data($_POST)['cost'];
             $errors = validate_bet_form($bet_from_form, $adv['min_next_bet'], $adv['author_id']);
 
-            add_bet($bet_from_form, $errors, $categories, $adv, $bets, $link, $received_lot_id,
-                $_SESSION['user']['id']);
+            add_bet(
+                $bet_from_form,
+                $errors,
+                $categories,
+                $adv,
+                $bets,
+                $link,
+                $received_lot_id,
+                $_SESSION['user']['id']
+            );
         }
 
         $page_content = include_template(

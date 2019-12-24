@@ -2,13 +2,14 @@
 <div class="container">
     <section class="lots">
         <h2>Все лоты в категории <span><?= $category_name; ?></span></h2>
-        <?php if (is_array($lots)): ; ?>
+        <?php if (is_array($lots)) :
+            ; ?>
             <ul class="lots__list">
                 <?php foreach ($lots as $lot) : ?>
                     <?= include_template('lot_preview.php', ['lot' => $lot]); ?>
                 <?php endforeach; ?>
             </ul>
-        <?php else: ?>
+        <?php else : ?>
             <h3><?= $error; ?></h3>
         <?php endif; ?>
     </section>

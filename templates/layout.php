@@ -5,7 +5,7 @@
     <title><?= esc($title); ?></title>
     <link href="../css/normalize.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
-    <?php if ($flatpickr): ?>
+    <?php if ($flatpickr) : ?>
         <link href="../css/flatpickr.min.css" rel="stylesheet">
     <?php endif; ?>
 </head>
@@ -106,7 +106,7 @@
     </div>
 </footer>
 
-<?php if ($flatpickr): ?>
+<?php if ($flatpickr) : ?>
     <script src="flatpickr.js"></script>
 <?php endif; ?>
 <script src="flatpickr.js"></script>

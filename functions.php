@@ -106,7 +106,8 @@ function is_correct_length($name, $min, $max)
 function get_lot_form_data($lot_data): array
 {
     // возврат значений для всех указанных полей
-    $lot_data = filter_input_array(INPUT_POST,
+    $lot_data = filter_input_array(
+        INPUT_POST,
         [
             'lot-name' => FILTER_DEFAULT, // без фильтра
             'category' => FILTER_DEFAULT,
@@ -127,13 +128,16 @@ function get_lot_form_data($lot_data): array
  */
 function get_user_form_reg_data(array $fields): array
 {
-    $fields = filter_input_array(INPUT_POST,
+    $fields = filter_input_array(
+        INPUT_POST,
         [
             'email' => FILTER_DEFAULT,
             'password' => FILTER_DEFAULT,
             'name' => FILTER_DEFAULT,
             'message' => FILTER_DEFAULT
-        ], true);
+        ],
+        true
+    );
     return $fields;
 }
 
@@ -144,11 +148,14 @@ function get_user_form_reg_data(array $fields): array
  */
 function get_login_form_data(array $fields): array
 {
-    $fields = filter_input_array(INPUT_POST,
+    $fields = filter_input_array(
+        INPUT_POST,
         [
             'email' => FILTER_DEFAULT,
             'password' => FILTER_DEFAULT
-        ], true);
+        ],
+        true
+    );
     return $fields;
 }
 
@@ -159,10 +166,13 @@ function get_login_form_data(array $fields): array
  */
 function get_add_bet_form_data(array $fields): array
 {
-    $fields = filter_input_array(INPUT_POST,
+    $fields = filter_input_array(
+        INPUT_POST,
         [
             'cost' => FILTER_DEFAULT
-        ], true);
+        ],
+        true
+    );
     return $fields;
 }
 
@@ -494,16 +504,28 @@ function get_bet_timeleft(string $bets_creation_time): string
     $diff_time = $now - $bet_time;
     $time_left = '';
     if ($diff_time < 59) {
-        $time_left = $diff_time . ' ' . get_noun_plural_form($diff_time,
-                'секунда', 'секунды', 'секунд') . ' назад';
+        $time_left = $diff_time . ' ' . get_noun_plural_form(
+            $diff_time,
+            'секунда',
+            'секунды',
+            'секунд'
+        ) . ' назад';
     } elseif ($diff_time < 3600) {
         $diff_time = floor($diff_time / 60);
-        $time_left = $diff_time . ' ' . get_noun_plural_form($diff_time,
-                'минута', 'минуты', 'минут') . ' назад';
+        $time_left = $diff_time . ' ' . get_noun_plural_form(
+            $diff_time,
+            'минута',
+            'минуты',
+            'минут'
+        ) . ' назад';
     } elseif ($diff_time < 86400) {
         $diff_time = floor($diff_time / 3600);
-        $time_left = $diff_time . ' ' . get_noun_plural_form($diff_time,
-                'час', 'часа', 'часов') . ' назад';
+        $time_left = $diff_time . ' ' . get_noun_plural_form(
+            $diff_time,
+            'час',
+            'часа',
+            'часов'
+        ) . ' назад';
     } elseif ($diff_time < 172800) {
         $diff_time = floor($diff_time / 86400);
         $time_left = date('Вчера в H:i', $bet_time);

@@ -15,8 +15,12 @@
                     <?php
                     if (isset($lot['bet_count']) && $lot['bet_count'] > 0) {
                         echo esc($lot['bet_count']).
-                            esc(get_noun_plural_form($lot['bet_count'], ' ставка',
-                                ' ставки', ' ставок'));
+                            esc(get_noun_plural_form(
+                                $lot['bet_count'],
+                                ' ставка',
+                                ' ставки',
+                                ' ставок'
+                            ));
                     } else {
                         echo 'Стартовая цена';
                     }
@@ -30,7 +34,7 @@
                         echo format_sum($current_price)
                             .' <b class="rub">р</b>';
                     }
-                     ?>
+                    ?>
                 </span>
             </div>
             <?php $timer = get_timer_state($lot); ?>

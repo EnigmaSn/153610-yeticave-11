@@ -4,15 +4,19 @@
 <form class="form form--add-lot container <?= esc($form_error); ?>" action="add.php" method="post" enctype="multipart/form-data">
     <h2>Добавление лота</h2>
     <div class="form__container-two">
-        <div class="form__item <?php if(isset($errors['lot-name'])): ?>form__item--invalid<?php endif; ?>">
+        <div class="form__item <?php if (isset($errors['lot-name'])) :
+            ?>form__item--invalid<?php
+                               endif; ?>">
             <label for="lot-name">Наименование <sup>*</sup></label>
             <input id="lot-name" type="text" name="lot-name" placeholder="Введите наименование лота" value="<?= get_post_val('lot-name') ?>">
             <span class="form__error"><?= (isset($errors['lot-name']) ? esc($errors['lot-name']) : null); ?></span>
         </div>
-        <div class="form__item <?php if(isset($errors['category'])): ?>form__item--invalid<?php endif; ?>">
+        <div class="form__item <?php if (isset($errors['category'])) :
+            ?>form__item--invalid<?php
+                               endif; ?>">
             <label for="category">Категория <sup>*</sup></label>
             <select id="category" name="category">
-                <?php foreach ($categories as $category): ?>
+                <?php foreach ($categories as $category) : ?>
                     <option class="nav__item" value="<?= (isset($category['id']) ? esc($category['id']) : null); ?>">
                         <?= (isset($category['name']) ? esc($category['name']) : null); ?>
                     </option>
@@ -23,7 +27,9 @@
             </span>
         </div>
     </div>
-    <div class="form__item form__item--wide <?php if(isset($errors['message'])): ?>form__item--invalid<?php endif; ?>">
+    <div class="form__item form__item--wide <?php if (isset($errors['message'])) :
+        ?>form__item--invalid<?php
+                                            endif; ?>">
         <label for="message">Описание <sup>*</sup></label>
         <textarea id="message" name="message" placeholder="Напишите описание лота"><?= get_post_val('message') ?></textarea>
         <span class="form__error">
@@ -40,21 +46,27 @@
         </div>
     </div>
     <div class="form__container-three">
-        <div class="form__item form__item--small <?php if(isset($errors['lot-rate'])): ?>form__item--invalid<?php endif; ?>">
+        <div class="form__item form__item--small <?php if (isset($errors['lot-rate'])) :
+            ?>form__item--invalid<?php
+                                                 endif; ?>">
             <label for="lot-rate">Начальная цена <sup>*</sup></label>
             <input id="lot-rate" type="text" name="lot-rate" placeholder="0" value="<?= get_post_val('lot_rate') ?>">
             <span class="form__error">
                 <?= (isset($errors['lot-rate']) ? esc($errors['lot-rate']) : null); ?>
             </span>
         </div>
-        <div class="form__item form__item--small <?php if(isset($errors['lot-step'])): ?>form__item--invalid<?php endif; ?>">
+        <div class="form__item form__item--small <?php if (isset($errors['lot-step'])) :
+            ?>form__item--invalid<?php
+                                                 endif; ?>">
             <label for="lot-step">Шаг ставки <sup>*</sup></label>
             <input id="lot-step" type="text" name="lot-step" placeholder="0" value="<?= get_post_val('lot-step') ?>">
             <span class="form__error">
                 <?= (isset($errors['lot-step']) ? esc($errors['lot-step']) : null); ?>
             </span>
         </div>
-        <div class="form__item <?php if(isset($errors['lot-date'])): ?>form__item--invalid<?php endif; ?>">
+        <div class="form__item <?php if (isset($errors['lot-date'])) :
+            ?>form__item--invalid<?php
+                               endif; ?>">
             <label for="lot-date">Дата окончания торгов <sup>*</sup></label>
             <input class="form__input-date" id="lot-date" type="text" name="lot-date" placeholder="Введите дату в формате ГГГГ-ММ-ДД" value="<?= get_post_val('lot-date') ?>">
             <span class="form__error">
@@ -62,10 +74,10 @@
             </span>
         </div>
     </div>
-    <?php if (isset($errors)): ?>
+    <?php if (isset($errors)) : ?>
         <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
         <ul>
-            <?php foreach ($errors as $val): ?>
+            <?php foreach ($errors as $val) : ?>
                 <li><?= esc($val); ?></li>
             <?php endforeach; ?>
         </ul>

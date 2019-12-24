@@ -5,7 +5,8 @@
         <a <?= "class='$class_hide'"; ?>
             href="<?= $_SERVER['PHP_SELF'] ?>?<?= $param; ?>&page=<?= $cur_page
             - 1; ?>">Назад</a></li>
-    <?php foreach ($pages as $page): ; ?>
+    <?php foreach ($pages as $page) :
+        ; ?>
         <?php ($page == $cur_page) ?
             $class_active = 'pagination-item-active'
             : $class_active = ''; ?>
