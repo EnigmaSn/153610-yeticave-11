@@ -1,7 +1,6 @@
 <?php
 require_once('helpers.php');
 require_once('init.php');
-require_once('data.php');
 require_once('functions.php');
 require_once('db.php');
 require_once('models/models.php');
@@ -30,6 +29,13 @@ if (!empty($_POST)) {
         $lot_id = insert_lot($link, $lot_data);
         // если результат запроса выполнен = получен id
         if ($lot_id) {
+            $page_content = include_template(
+                'add.php',
+                [
+                    'categories' => $categories,
+                    'errors' => $errors
+                ]
+            );
             // переадресовать пользователя на страницу просмотра этого лота
             header("Location: lot.php?id=" . $lot_id);
         }
@@ -48,7 +54,7 @@ if (!empty($_POST)) {
 // закрыть доступ, если пользователь не авторизован
 if (!isset($_SESSION['user'])) {
     http_response_code(403);
-    $error = "Error 403 <br> Доступ запрещен";
+    $error = "Error 403. Доступ запрещен";
     $page_content = include_template('error.php', [
         'categories' => $categories,
         'error'      => $error
@@ -59,7 +65,6 @@ $layout_content = include_template(
     'layout.php',
     [
         'page_content' => $page_content,
-        //'user_name' => $user_name,
         'title' => 'Страница добавления лота',
         'categories' => $categories,
         'flatpickr' => true

@@ -1,7 +1,6 @@
 <?php
 require_once('helpers.php');
 require_once('init.php');
-require_once('data.php');
 require_once('models/models.php');
 require_once('functions.php');
 
@@ -21,6 +20,13 @@ if (!empty($_POST)) {
             ]
         );
     } else {
+        $page_content = include_template(
+            'sign_up.php',
+            [
+                'categories' => $categories,
+                'errors' => $errors,
+            ]
+        );
         $is_user_added = insert_user($link);
         // если пользователь добавлен в БД,
         // то перейти на страницу входа
@@ -40,7 +46,7 @@ if (!empty($_POST)) {
 // закрыть доступ, если пользователь авторизован
 if (isset($_SESSION['user'])) {
     http_response_code(403);
-    $error = "Error 403 <br> Доступ запрещен";
+    $error = "Error 403. Доступ запрещен";
     $page_content = include_template('error.php', [
         'categories' => $categories,
         'error'      => $error

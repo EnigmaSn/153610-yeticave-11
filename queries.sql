@@ -9,7 +9,6 @@ INSERT INTO categories SET name = 'Ботинки', symbol_code = 'boots';
 INSERT INTO categories SET name = 'Одежда', symbol_code = 'clothing';
 INSERT INTO categories SET name = 'Инструменты', symbol_code = 'tools';
 INSERT INTO categories SET name = 'Разное', symbol_code = 'other';
-INSERT INTO categories SET name = 'Тестовая категория из queries', symbol_code = 'test'; -- не отображается. что делать?
 
 -- добавление юзеров
 INSERT INTO users SET
@@ -26,18 +25,6 @@ INSERT INTO users SET
     contact = 'facebook.com/severus_snape';
 
 -- добавление объявлений
-
-INSERT INTO lots SET
-    create_date = NOW(),
-    name = 'Тестовый лот из queries',
-    description = 'Это ноуборд. Хороший такой. Берите',
-    img = 'lot-1.jpg',
-    start_price = 10999,
-    end_date = '2019-10-04',
-    step = 500,
-    author_id = 1,
-    winner_id = null,
-    category_id = 1;
 
 INSERT INTO lots SET
         create_date = NOW(),
@@ -139,14 +126,9 @@ SELECT *, categories.name FROM lots
 JOIN categories ON lots.category_id = categories.id
 WHERE lots.id = 1;
 
--- обновить название лота по его идентификатору;
-UPDATE lots SET name = 'Измененное название лота'
-WHERE lots.id = 1;
-
 -- получить список ставок для лота
 -- по его идентификатору с сортировкой по дате.
 SELECT * FROM bets
 JOIN lots ON bets.lot_id = lots.id
 WHERE lots.id = 1
 ORDER BY bets.date DESC;
-

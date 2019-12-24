@@ -3,6 +3,7 @@
     require_once('init.php');
     require_once('functions.php');
     require_once('models/models.php');
+    require_once('getwinner.php');
 
     $ads = get_lots($link); // получение списка новых лотов
     $categories = get_categories($link); // получение списка категорий
@@ -18,7 +19,6 @@
         'layout.php',
         [
             'page_content' => $page_content,
-            'user_name' => $user_name,
             'title' => 'Yeti Cave - Главная страница',
             'categories' => $categories,
             'flatpickr' => false

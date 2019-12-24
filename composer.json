@@ -1,0 +1,13 @@
+{
+    "name": "enigmasn/yeticave",
+    "description": "Интернет-аукцион",
+    "authors": [
+        {
+            "name": "Anna Ponomareva",
+            "email": "enigmasnape@gmail.com"
+        }
+    ],
+    "require": {
+        "swiftmailer/swiftmailer": "^6.0"
+    }
+}
