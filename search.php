@@ -17,15 +17,15 @@ if (is_int($lots_count)) {
     $lots = get_searching_lots($link, $search_query, $item_per_page, $offset);
     $page_content = include_template('search.php', [
         'categories' => $categories,
-        'pages'      => $pages,
-        'cur_page'   => $cur_page,
+        'pages' => $pages,
+        'cur_page' => $cur_page,
         'lots' => $lots,
         'search_query' => $search_query
     ]);
 } else {
     $page_content = include_template('search.php', [
         'categories' => $categories,
-        'pages'      => 1,
+        'pages' => 1,
         'lots' => null,
         'search_query' => $search_query,
         'error' => $lots_count

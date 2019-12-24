@@ -14,7 +14,7 @@ if (!empty($_POST)) {
     if (count($errors)) {
         $page_content = include_template('/login.php', [
             'categories' => $categories,
-            'errors'     => $errors
+            'errors' => $errors
         ]);
     } else {
         // если аутентификация прошла успешно,

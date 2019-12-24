@@ -2,7 +2,7 @@
     <h2 class="promo__title">Нужен стафф для катки?</h2>
     <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
     <ul class="promo__list">
-        <?php foreach ($categories as $category): ?>
+        <?php foreach ($categories as $category) : ?>
             <li class="promo__item promo__item--<?= isset($category['symbol_code']) ? esc($category['symbol_code']) : null; ?>">
                 <a class="promo__link" href="/all-lots.php?catid=<?= isset($category['id']) ? esc($category['id']) : null; ?>">
                     <?= isset($category['name']) ? esc($category['name']) : null; ?>
@@ -16,7 +16,7 @@
         <h2>Открытые лоты</h2>
     </div>
     <ul class="lots__list">
-        <?php foreach ($ads as $adv): ?>
+        <?php foreach ($ads as $adv) : ?>
             <li class="lots__item lot">
                 <div class="lot__image">
                     <img src="uploads/<?= isset($adv['img']) ? esc($adv['img']) : null; ?>" width="350" height="260" alt="">
@@ -40,21 +40,21 @@
                                             $adv['current_price'];
                                         echo esc(format_sum($current_price));
                                     }
-                                     ?> <b class="rub">р</b>
+                                    ?> <b class="rub">р</b>
 
                                 </span>
                         </div>
 
                         <div class="lot__timer timer <?php
-                            if (isset($adv['end_date'])) {
-                                $hours = find_remaining_time($adv['end_date'])['hours'];
-                                $minutes = find_remaining_time($adv['end_date'])['minutes'];
+                        if (isset($adv['end_date'])) {
+                            $hours = find_remaining_time($adv['end_date'])['hours'];
+                            $minutes = find_remaining_time($adv['end_date'])['minutes'];
 
-                                if ($hours === 0) {
-                                    echo 'timer--finishing';
-                                }
+                            if ($hours === 0) {
+                                echo 'timer--finishing';
                             }
-                            ?>">
+                        }
+                        ?>">
                             <?= $hours . ":" . $minutes; ?>
                         </div>
                     </div>

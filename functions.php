@@ -5,7 +5,8 @@
  * @param float $price - изначальная цена
  * @return string - измененная цена
  */
-function format_sum(float $price) {
+function format_sum(float $price)
+{
     $price = ceil($price);
 
     $price = number_format($price, 0, '', ' ');
@@ -17,7 +18,8 @@ function format_sum(float $price) {
  * @param {string} $str — исходная строка, которую надо экранировать
  * @return string — экранированная строка
  */
-function esc($data) {
+function esc($data)
+{
     $str = htmlspecialchars($data);
     return $str;
 }
@@ -27,7 +29,8 @@ function esc($data) {
  * @param $date - дата, до которой нужно посчитать количество оставшегося времени
  * @return array - массив - массива из часов и минут, оставшихся до окончания
  */
-function find_remaining_time($date) {
+function find_remaining_time($date)
+{
     $current_date = date_create("now");
     $date = date_create($date);
     $remaining_time_arr = [];
@@ -58,7 +61,8 @@ function find_remaining_time($date) {
  * @param $bet_time - время создания ставки
  * @return int
  */
-function get_elapsed_time($bet_time) {
+function get_elapsed_time($bet_time)
+{
     // TODO доделать
     $current_date = time();
     $diff = $current_date - $bet_time;
@@ -71,7 +75,8 @@ function get_elapsed_time($bet_time) {
  * @param $name - имя поля
  * @return mixed - значение переменной в случае успеха
  */
-function get_post_val($name) {
+function get_post_val($name)
+{
     $value = filter_input(INPUT_POST, $name);
     return esc($value);
 }
@@ -83,7 +88,8 @@ function get_post_val($name) {
  * @param $max
  * @return string|null
  */
-function is_correct_length($name, $min, $max) {
+function is_correct_length($name, $min, $max)
+{
     $len = strlen($name);
     if ($len < $min || $len > $max) {
         return "Значение  должно быть от $min до $max символов";
@@ -97,9 +103,11 @@ function is_correct_length($name, $min, $max) {
  * @param $lot_data
  * @return array
  */
-function get_lot_form_data($lot_data) : array {
+function get_lot_form_data($lot_data): array
+{
     // возврат значений для всех указанных полей
-    $lot_data = filter_input_array(INPUT_POST,
+    $lot_data = filter_input_array(
+        INPUT_POST,
         [
             'lot-name' => FILTER_DEFAULT, // без фильтра
             'category' => FILTER_DEFAULT,
@@ -118,14 +126,18 @@ function get_lot_form_data($lot_data) : array {
  * @param array $fields
  * @return array
  */
-function get_user_form_reg_data(array $fields) : array {
-    $fields = filter_input_array(INPUT_POST,
+function get_user_form_reg_data(array $fields): array
+{
+    $fields = filter_input_array(
+        INPUT_POST,
         [
-            'email'=> FILTER_DEFAULT,
+            'email' => FILTER_DEFAULT,
             'password' => FILTER_DEFAULT,
             'name' => FILTER_DEFAULT,
             'message' => FILTER_DEFAULT
-        ], true);
+        ],
+        true
+    );
     return $fields;
 }
 
@@ -134,12 +146,16 @@ function get_user_form_reg_data(array $fields) : array {
  * @param array $fields
  * @return array
  */
-function get_login_form_data(array $fields) : array {
-    $fields = filter_input_array(INPUT_POST,
+function get_login_form_data(array $fields): array
+{
+    $fields = filter_input_array(
+        INPUT_POST,
         [
-            'email'=> FILTER_DEFAULT,
+            'email' => FILTER_DEFAULT,
             'password' => FILTER_DEFAULT
-        ], true);
+        ],
+        true
+    );
     return $fields;
 }
 
@@ -148,11 +164,15 @@ function get_login_form_data(array $fields) : array {
  * @param array $fields
  * @return array
  */
-function get_add_bet_form_data (array $fields) : array {
-    $fields = filter_input_array(INPUT_POST,
+function get_add_bet_form_data(array $fields): array
+{
+    $fields = filter_input_array(
+        INPUT_POST,
         [
             'cost' => FILTER_DEFAULT
-        ], true);
+        ],
+        true
+    );
     return $fields;
 }
 
@@ -164,11 +184,12 @@ function get_add_bet_form_data (array $fields) : array {
  * @param $author_id
  * @return array
  */
-function validate_bet_form($bet_data, $min_next_bet, $author_id) : array {
+function validate_bet_form($bet_data, $min_next_bet, $author_id): array
+{
     $errors = [];
-    $errors['cost'] = validate_bet($bet_data, $min_next_bet, $author_id );
+    $errors['cost'] = validate_bet($bet_data, $min_next_bet, $author_id);
     $errors = array_filter($errors);
-    return  $errors;
+    return $errors;
 }
 
 /**
@@ -178,7 +199,8 @@ function validate_bet_form($bet_data, $min_next_bet, $author_id) : array {
  * @param $author_id
  * @return string|null
  */
-function validate_bet($data, $min_next_bet, $author_id) {
+function validate_bet($data, $min_next_bet, $author_id)
+{
 
     if (!is_int($data)) {
         return "Ставка должна быть числом";
@@ -187,7 +209,7 @@ function validate_bet($data, $min_next_bet, $author_id) {
         return "Новая ставка должна быть больше $min_next_bet";
     }
 
-    if ($author_id === (int) $_SESSION['user']['id']) {
+    if ($author_id === (int)$_SESSION['user']['id']) {
         return "Нельзя добавлять ставку к своим лотам";
     }
     if (!$data) {
@@ -206,7 +228,8 @@ function validate_bet($data, $min_next_bet, $author_id) {
  * @param array $categories_id
  * @return array
  */
-function validate_lot_form(array $lot_data, $file_data, array $categories_id) : array {
+function validate_lot_form(array $lot_data, $file_data, array $categories_id): array
+{
     $errors = [];
     $required_fields = [
         'lot-name',
@@ -233,7 +256,7 @@ function validate_lot_form(array $lot_data, $file_data, array $categories_id) : 
     }
 
     $errors = array_filter($errors);
-    return  $errors;
+    return $errors;
 }
 
 /**
@@ -242,7 +265,8 @@ function validate_lot_form(array $lot_data, $file_data, array $categories_id) : 
  * @param array $categories
  * @return string|null
  */
-function validate_lot_category(string $category, array $categories) {
+function validate_lot_category(string $category, array $categories)
+{
     if (!in_array($category, $categories)) {
         return "Такой категории не существует";
     }
@@ -254,7 +278,8 @@ function validate_lot_category(string $category, array $categories) {
  * @param $data
  * @return string|null
  */
-function validate_lot_name($data) {
+function validate_lot_name($data)
+{
     return is_correct_length($data, 3, 128);
 }
 
@@ -263,7 +288,8 @@ function validate_lot_name($data) {
  * @param $data
  * @return string|null
  */
-function validate_lot_message($data) {
+function validate_lot_message($data)
+{
     return is_correct_length($data, 3, 3000);
 }
 
@@ -272,7 +298,8 @@ function validate_lot_message($data) {
  * @param $data
  * @return string|null
  */
-function validate_lot_rate($data) {
+function validate_lot_rate($data)
+{
     if (!$data || $data <= 0) {
         return "Начальная цена должна быть числом больше ноля";
     }
@@ -284,7 +311,8 @@ function validate_lot_rate($data) {
  * @param $data
  * @return string|null
  */
-function validate_lot_step($data) {
+function validate_lot_step($data)
+{
     if (!$data || $data <= 0) {
         return "Шаг ставки должен быть числом больше ноля";
     }
@@ -296,7 +324,8 @@ function validate_lot_step($data) {
  * @param $data
  * @return string|null
  */
-function validate_lot_date($data) {
+function validate_lot_date($data)
+{
     $format = is_date_valid($data); // boolean
     $current_date = date_create("now");
     $current_date = date_format($current_date, 'Y-m-d');
@@ -311,7 +340,8 @@ function validate_lot_date($data) {
  * @param array $data
  * @return string|null
  */
-function validate_lot_file(array $data) {
+function validate_lot_file(array $data)
+{
     if ($data['size'] === 0) {
         return "Загрузите изображение";
     }
@@ -333,7 +363,8 @@ function validate_lot_file(array $data) {
  * @param array $fields
  * @return array
  */
-function validate_reg_form(mysqli $link, array $fields) : array {
+function validate_reg_form(mysqli $link, array $fields): array
+{
     $errors = [];
     $required_fields = [
         'email',
@@ -358,7 +389,8 @@ function validate_reg_form(mysqli $link, array $fields) : array {
  * @param array $fields
  * @return array
  */
-function validate_login_form(mysqli $link, array $fields) : array {
+function validate_login_form(mysqli $link, array $fields): array
+{
     $errors = [];
     $required_fields = [
         'email',
@@ -382,12 +414,13 @@ function validate_login_form(mysqli $link, array $fields) : array {
  * @param string $email
  * @return string|null
  */
-function validate_email_exist(mysqli $link, string $email) : ?string {
+function validate_email_exist(mysqli $link, string $email): ?string
+{
     $email_is_valid = filter_var($email, FILTER_VALIDATE_EMAIL);
     if (!$email_is_valid) {
         return "Введите валидный email";
     }
-    if(!is_null(is_correct_length($email, 3, 128))) {
+    if (!is_null(is_correct_length($email, 3, 128))) {
         return is_correct_length($email, 3, 128);
     }
     $email_exists = check_email($link, $email);
@@ -404,9 +437,10 @@ function validate_email_exist(mysqli $link, string $email) : ?string {
  * @param string $password
  * @return string|null
  */
-function validate_login_password(mysqli $link, string $email, string $password) : ?string {
+function validate_login_password(mysqli $link, string $email, string $password): ?string
+{
     $password_from_db = get_password($link, $email)['password'];
-    if(!is_null(is_correct_length($email, 3, 128))) {
+    if (!is_null(is_correct_length($email, 3, 128))) {
         return is_correct_length($email, 3, 128);
     }
     if (!password_verify($password, $password_from_db)) {
@@ -421,9 +455,10 @@ function validate_login_password(mysqli $link, string $email, string $password) 
  * @param $email
  * @return string|null
  */
-function validate_email(mysqli $link, $email) {
+function validate_email(mysqli $link, $email)
+{
     $email_is_valid = filter_var($email, FILTER_VALIDATE_EMAIL);
-    if(!is_null(is_correct_length($email, 3, 128))) {
+    if (!is_null(is_correct_length($email, 3, 128))) {
         return is_correct_length($email, 3, 128);
     }
     if (!$email_is_valid) {
@@ -442,7 +477,8 @@ function validate_email(mysqli $link, $email) {
  * @param array $data
  * @return string - новое имя файла с расширением
  */
-function save_lot_img(array $data) : string {
+function save_lot_img(array $data): string
+{
     $tmp_file_name = $data['name'];
     $tmp_file_path = $data['tmp_name'];
     $file_ext = substr($tmp_file_name, strrpos($tmp_file_name, '.'));
@@ -468,16 +504,28 @@ function get_bet_timeleft(string $bets_creation_time): string
     $diff_time = $now - $bet_time;
     $time_left = '';
     if ($diff_time < 59) {
-        $time_left = $diff_time.' '.get_noun_plural_form($diff_time,
-                'секунда', 'секунды', 'секунд').' назад';
+        $time_left = $diff_time . ' ' . get_noun_plural_form(
+            $diff_time,
+            'секунда',
+            'секунды',
+            'секунд'
+        ) . ' назад';
     } elseif ($diff_time < 3600) {
         $diff_time = floor($diff_time / 60);
-        $time_left = $diff_time.' '.get_noun_plural_form($diff_time,
-                'минута', 'минуты', 'минут').' назад';
+        $time_left = $diff_time . ' ' . get_noun_plural_form(
+            $diff_time,
+            'минута',
+            'минуты',
+            'минут'
+        ) . ' назад';
     } elseif ($diff_time < 86400) {
         $diff_time = floor($diff_time / 3600);
-        $time_left = $diff_time.' '.get_noun_plural_form($diff_time,
-                'час', 'часа', 'часов').' назад';
+        $time_left = $diff_time . ' ' . get_noun_plural_form(
+            $diff_time,
+            'час',
+            'часа',
+            'часов'
+        ) . ' назад';
     } elseif ($diff_time < 172800) {
         $diff_time = floor($diff_time / 86400);
         $time_left = date('Вчера в H:i', $bet_time);
@@ -495,16 +543,16 @@ function get_bet_timeleft(string $bets_creation_time): string
  * @param array $win_bets
  * @return array
  */
-function get_timer_state(array $lot, int $user_id = 0, $win_bets = []) : array
+function get_timer_state(array $lot, int $user_id = 0, $win_bets = []): array
 {
     $time_remaining = get_time_remaining($lot['end_date']);
     $timer = [
-        'state'   => '',
+        'state' => '',
         'message' =>
-            sprintf("%02d", $time_remaining['d']).':'
-            .sprintf("%02d", $time_remaining['h']).':'
-            .sprintf("%02d", $time_remaining['m']),
-        'class'   => ''
+            sprintf("%02d", $time_remaining['d']) . ':'
+            . sprintf("%02d", $time_remaining['h']) . ':'
+            . sprintf("%02d", $time_remaining['m']),
+        'class' => ''
     ];
 
     if ($time_remaining['diff'] === 0) {
@@ -538,9 +586,9 @@ function get_time_remaining(string $time): array
     }
 
     $time_remaining = [
-        'h'    => floor(($time_diff % 86400) / 3600),
-        'm'    => floor(($time_diff % 3600) / 60),
-        'd'    => floor($time_diff / 86400),
+        'h' => floor(($time_diff % 86400) / 3600),
+        'm' => floor(($time_diff % 3600) / 60),
+        'd' => floor($time_diff / 86400),
         'diff' => $time_diff
     ];
 
@@ -553,7 +601,7 @@ function get_time_remaining(string $time): array
  * @param int $lot_id
  * @return Swift_Message
  */
-function get_message(array $winner, int $lot_id) : Swift_Message
+function get_message(array $winner, int $lot_id): Swift_Message
 {
     $msg_content = include_template('email.php', [
         'winner' => $winner,
@@ -567,4 +615,41 @@ function get_message(array $winner, int $lot_id) : Swift_Message
         ->setBody($msg_content, 'text/html');
 
     return $message;
+}
+
+/**
+ * Функция-матка для добавления ставки
+ * @param $bet_from_form
+ * @param $errors
+ * @param $categories
+ * @param $adv
+ * @param $bets
+ * @param $link
+ * @param $received_lot_id
+ * @param $user_id
+ */
+function add_bet($bet_from_form, $errors, $categories, $adv, $bets, $link, $received_lot_id, $user_id)
+{
+    if (count($errors)) {
+        $page_content = include_template(
+            'lot.php',
+            [
+                'categories' => $categories,
+                'adv' => $adv,
+                'bets' => $bets,
+                'errors' => $errors ?? null
+            ]
+        );
+    } else {
+        $bet_added = insert_bet($link, (int)$bet_from_form, (int)$received_lot_id, (int)$user_id, $bet_from_form);
+
+        if ($bet_added) {
+            $lot = get_lot_by_id($link, $received_lot_id);
+            $bets = get_bets_for_lot($link, $received_lot_id);
+
+            header("Location: lot.php?id=" . $_GET['id']);
+        } else {
+            echo "Ставка НЕ добавлена";
+        }
+    }
 }

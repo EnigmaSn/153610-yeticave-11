@@ -6,7 +6,8 @@ require_once('db.php');
  * @param $link - ресурс соединения
  * @return array - массив списка лотов
  */
-function get_lots($link) {
+function get_lots($link)
+{
     $sql = "
     SELECT `lots`.`id`  AS `lot_id`, `lots`.`name` AS `lot_name`, `create_date`,
     `end_date`, `start_price`, `img`, `start_price` + `step` AS `current_price`, 
@@ -28,7 +29,8 @@ function get_lots($link) {
  * @return array
  */
 
-function get_categories(mysqli $link) : array {
+function get_categories(mysqli $link) : array
+{
     $sql = "
     SELECT `id`, `name`, `symbol_code` FROM `categories`;";
     $sql_result = mysqli_query($link, $sql);
@@ -42,7 +44,8 @@ function get_categories(mysqli $link) : array {
  * @param $received_lot_id
  * @return array|null
  */
-function get_lot_by_id($link, $received_lot_id) {
+function get_lot_by_id($link, $received_lot_id)
+{
     $sql = "SELECT `lots`.`id`, `create_date`, `lots`.`name` AS `lot_name`, `description`, `img`, `start_price` AS `current_price`,
     `end_date`, `step`, `author_id`, `winner_id`, `categories`.`name` AS `category_id`,
     MAX(bets.sum) as max_bet
@@ -64,7 +67,8 @@ function get_lot_by_id($link, $received_lot_id) {
  * @param $received_lot_id
  * @return array
  */
-function get_bets_for_lot($link, $received_lot_id) {
+function get_bets_for_lot($link, $received_lot_id)
+{
     $sql = "SELECT `bets`.`id`, `bets`.`date`, `user_id`, `price`, `lot_id`,
         `users`.`name` AS `user_name`, `start_price` + `step` AS `current_price`
         FROM `bets`
@@ -84,7 +88,8 @@ function get_bets_for_lot($link, $received_lot_id) {
  * @param string $email
  * @return array|null
  */
-function get_password(mysqli $link, string $email) : ?array {
+function get_password(mysqli $link, string $email) : ?array
+{
     $sql = "SELECT password FROM users WHERE email = ?";
     $stmt = db_get_prepare_stmt($link, $sql, $data = [$email]);
     if (!mysqli_stmt_execute($stmt)) {
@@ -120,7 +125,8 @@ function get_user(mysqli $link, string $email) : array
  * @param $lot_data
  * @return int|string|null
  */
-function insert_lot($link, $lot_data) {
+function insert_lot($link, $lot_data)
+{
     $user_id = $_SESSION['user']['id'];
     $sql = "INSERT INTO `lots` (`name`, `description`, `start_price`, `end_date`, `step`, `category_id`, `img`, `create_date`, `author_id`)
             VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)";
@@ -168,12 +174,13 @@ function check_email(mysqli $link, $email) : bool
  * @param $link
  * @return bool|null
  */
-function insert_user($link) {
+function insert_user($link)
+{
     $sql = "INSERT INTO `users` (`register_date`, `email`, `password`, `name`, `contact`)
             VALUES (NOW(), ?, ?, ?, ?)";
     $stmt = db_get_prepare_stmt($link, $sql, $data = [
         'email' => $_POST['email'],
-        'password' => password_hash($_POST['password'],PASSWORD_DEFAULT),
+        'password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
         'name' => $_POST['name'],
         'contact' => $_POST['message']
     ]);
@@ -190,7 +197,8 @@ function insert_user($link) {
  * @param $query
  * @return string
  */
-function get_lots_count($link, $query) {
+function get_lots_count($link, $query)
+{
     // если есть поисковый GET запрос
     if ($query) {
         $sql = "SELECT COUNT(*) AS count_item
@@ -221,8 +229,12 @@ function get_lots_count($link, $query) {
  * @param int $offset
  * @return array
  */
-function get_searching_lots($link, $query, int $limit,
-                            int $offset) : array {
+function get_searching_lots(
+    $link,
+    $query,
+    int $limit,
+    int $offset
+) : array {
     $sql = "SELECT lots.id,
     lots.name,
     start_price,
@@ -238,7 +250,7 @@ function get_searching_lots($link, $query, int $limit,
     LIMIT $limit OFFSET $offset";
 
     $stmt = db_get_prepare_stmt($link, $sql, $data = [$query]);
-    if (!mysqli_stmt_execute($stmt)){
+    if (!mysqli_stmt_execute($stmt)) {
         exit(mysqli_error($link));
     }
     $result = mysqli_stmt_get_result($stmt);
@@ -256,7 +268,8 @@ function get_searching_lots($link, $query, int $limit,
  * @param int $price
  * @return bool|null
  */
-function insert_bet(mysqli $link, float $bet, int $lot_id, int $user_id, int $price) : ?bool {
+function insert_bet(mysqli $link, float $bet, int $lot_id, int $user_id, int $price) : ?bool
+{
     $sql = "INSERT INTO `bets`
 	SET `bets`.`date` = NOW(),
     `bets`.`sum` = ?,
@@ -285,7 +298,8 @@ function insert_bet(mysqli $link, float $bet, int $lot_id, int $user_id, int $pr
  * @param int $user_id
  * @return array
  */
-function get_bets_for_user(mysqli $link, int $user_id) : array {
+function get_bets_for_user(mysqli $link, int $user_id) : array
+{
     $sql = "SELECT l.img,
         l.name,
         b.id as bet_id,
@@ -320,7 +334,8 @@ function get_bets_for_user(mysqli $link, int $user_id) : array {
  * @param int $user_id
  * @return array
  */
-function get_lots_where_winner(mysqli $link, int $user_id) : array {
+function get_lots_where_winner(mysqli $link, int $user_id) : array
+{
     $sql = "SELECT id FROM lots WHERE winner_id = ?";
     $stmt = db_get_prepare_stmt($link, $sql, $data = [$user_id]);
     mysqli_stmt_execute($stmt);
@@ -402,7 +417,8 @@ function get_winner(mysqli $link, int $lot_id) : array
  * @param int $winner
  * @return bool
  */
-function add_winner_to_lot(mysqli $link, int $lot, int $winner) : bool {
+function add_winner_to_lot(mysqli $link, int $lot, int $winner) : bool
+{
     $sql = "UPDATE lots 
         SET winner_id = $winner 
         WHERE id = $lot;";
@@ -419,7 +435,8 @@ function add_winner_to_lot(mysqli $link, int $lot, int $winner) : bool {
  * @param int $category
  * @return bool|string
  */
-function get_lots_by_cat_count(mysqli $link, int $category) {
+function get_lots_by_cat_count(mysqli $link, int $category)
+{
     if ($category !== 0) {
         $sql = "SELECT COUNT(*) as count_item
         FROM lots
@@ -450,7 +467,8 @@ function get_lots_by_cat_count(mysqli $link, int $category) {
  * @param int $offset
  * @return array
  */
-function get_lots_by_category(mysqli $link, int $category, int $limit, int $offset) : array {
+function get_lots_by_category(mysqli $link, int $category, int $limit, int $offset) : array
+{
     $sql = "
         SELECT l.id,
                l.name,

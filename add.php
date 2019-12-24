@@ -40,7 +40,6 @@ if (!empty($_POST)) {
             header("Location: lot.php?id=" . $lot_id);
         }
     }
-
 } else {
     $page_content = include_template(
         'add.php',
@@ -57,7 +56,7 @@ if (!isset($_SESSION['user'])) {
     $error = "Error 403. Доступ запрещен";
     $page_content = include_template('error.php', [
         'categories' => $categories,
-        'error'      => $error
+        'error' => $error
     ]);
 }
 
