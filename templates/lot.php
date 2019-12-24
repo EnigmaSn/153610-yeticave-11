@@ -8,7 +8,7 @@
             <img src="uploads/<?= $adv['img']; ?>" width="730" height="548" alt="<?= $adv['lot_name']; ?>">
           </div>
           <p class="lot-item__category">Категория: <span><?= $adv['category_id']; ?></span></p>
-          <p class="lot-item__description"><?= $adv['description'] ?></p>
+          <p class="lot-item__description"><?= esc($adv['description']); ?></p>
         </div>
         <div class="lot-item__right">
           <div class="lot-item__state">
