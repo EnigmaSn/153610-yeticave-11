@@ -29,6 +29,13 @@ if (!empty($_POST)) {
         $lot_id = insert_lot($link, $lot_data);
         // если результат запроса выполнен = получен id
         if ($lot_id) {
+            $page_content = include_template(
+                'add.php',
+                [
+                    'categories' => $categories,
+                    'errors' => $errors
+                ]
+            );
             // переадресовать пользователя на страницу просмотра этого лота
             header("Location: lot.php?id=" . $lot_id);
         }

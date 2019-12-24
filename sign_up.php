@@ -20,6 +20,13 @@ if (!empty($_POST)) {
             ]
         );
     } else {
+        $page_content = include_template(
+            'sign_up.php',
+            [
+                'categories' => $categories,
+                'errors' => $errors,
+            ]
+        );
         $is_user_added = insert_user($link);
         // если пользователь добавлен в БД,
         // то перейти на страницу входа
