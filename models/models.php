@@ -91,12 +91,17 @@ function get_password(mysqli $link, string $email) : ?array {
 
 function get_user(mysqli $link, string $email) : array
 {
-    $sql = "SELECT id, name FROM users WHERE email = '$email'";
-    $result = mysqli_query($link, $sql);
-    if (!$result) {
-        exit(mysqli_error($link));
+    //$sql = "SELECT id, name FROM users WHERE email = '$email'";
+    $sql = "SELECT id, name FROM users WHERE email = ?";
+//    $result = mysqli_query($link, $sql);
+//    if (!$result) {
+//        exit(mysqli_error($link));
+//    }
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$email]);
+    if (!mysqli_stmt_execute($stmt)) {
+        exit(mysqli_errno($link));
     }
-
+    $result = mysqli_stmt_get_result($stmt);
     $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
     return $user;
 }

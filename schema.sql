@@ -27,7 +27,7 @@ CREATE TABLE lots (
     create_date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     name VARCHAR(128) NOT NULL,
     description TEXT NOT NULL,
-    img TEXT NOT NULL,
+    img VARCHAR(256) NOT NULL,
     start_price INT NOT NULL,
     end_date DATETIME NOT NULL,
     step INT NOT NULL,
