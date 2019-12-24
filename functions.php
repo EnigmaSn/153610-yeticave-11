@@ -568,3 +568,39 @@ function get_message(array $winner, int $lot_id) : Swift_Message
 
     return $message;
 }
+
+/**
+ * Функция-матка для добавления ставки
+ * @param $bet_from_form
+ * @param $errors
+ * @param $categories
+ * @param $adv
+ * @param $bets
+ * @param $link
+ * @param $received_lot_id
+ * @param $user_id
+ */
+function add_bet($bet_from_form, $errors, $categories, $adv, $bets, $link, $received_lot_id, $user_id) {
+    if (count($errors)) {
+        $page_content = include_template(
+            'lot.php',
+            [
+                'categories' => $categories,
+                'adv' => $adv,
+                'bets' => $bets,
+                'errors' => $errors ?? null
+            ]
+        );
+    } else {
+        $bet_added = insert_bet($link, (int) $bet_from_form, (int) $received_lot_id, (int) $user_id, $bet_from_form);
+
+        if ($bet_added) {
+            $lot = get_lot_by_id($link, $received_lot_id);
+            $bets = get_bets_for_lot($link, $received_lot_id);
+
+            header("Location: lot.php?id=" . $_GET['id']);
+        } else {
+            echo "Ставка НЕ добавлена";
+        }
+    }
+}

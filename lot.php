@@ -30,34 +30,10 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
         // добавление ставки только если лот существует
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            // TODO вынестив функцию
-
             $bet_from_form = (int) get_add_bet_form_data($_POST)['cost'];
-
             $errors = validate_bet_form($bet_from_form, $adv['min_next_bet'], $adv['author_id']);
 
-            if (count($errors)) {
-                $page_content = include_template(
-                    'lot.php',
-                    [
-                        'categories' => $categories,
-                        'adv' => $adv,
-                        'bets' => $bets,
-                        'errors' => $errors ?? null
-                    ]
-                );
-            } else {
-                $bet_added = insert_bet($link, (int) $bet_from_form, (int) $received_lot_id, (int) $_SESSION['user']['id'], $bet_from_form);
-
-                if ($bet_added) {
-                    $lot = get_lot_by_id($link, $received_lot_id);
-                    $bets = get_bets_for_lot($link, $received_lot_id);
-
-                    header("Location: lot.php?id=" . $_GET['id']);
-                } else {
-                    echo "Ставка НЕ добавлена";
-                }
-            }
+            add_bet($bet_from_form, $errors, $categories, $adv, $bets, $link, $received_lot_id, $_SESSION['user']['id']);
         }
 
         $page_content = include_template(
