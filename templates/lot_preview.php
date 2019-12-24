@@ -7,7 +7,7 @@
         <span class="lot__category">
             <?= (isset($lot['category']) ? esc($lot['category']) : null); ?>
         </span>
-        <h3 class="lot__title"><a class="text-link" href="/lot.php/?id=<?= (isset($lot['id']) ? esc($lot['id']) : null); ?>"><?= (isset($lot['name']) ? esc($lot['name']) : null); ?></a>
+        <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?= (isset($lot['id']) ? esc($lot['id']) : null); ?>"><?= (isset($lot['name']) ? esc($lot['name']) : null); ?></a>
         </h3>
         <div class="lot__state">
             <div class="lot__rate">
@@ -23,10 +23,14 @@
                     ?>
                     </span>
                 <span class="lot__cost">
-                    <?php $current_price = $lot['max_bet'] ??
-                        $lot['start_price'];
-                    echo format_sum($current_price)
-                        .' <b class="rub">р</b>'; ?>
+                    <?php
+                    if (isset($lot['max_bet']) || isset($lot['start_price'])) {
+                        $current_price = $lot['max_bet'] ??
+                            $lot['start_price'];
+                        echo format_sum($current_price)
+                            .' <b class="rub">р</b>';
+                    }
+                     ?>
                 </span>
             </div>
             <?php $timer = get_timer_state($lot); ?>

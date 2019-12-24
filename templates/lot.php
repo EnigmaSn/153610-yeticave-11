@@ -22,40 +22,48 @@
 //            $minutes = find_remaining_time($adv['end_date'])['minutes'];
 
             if (isset($adv['end_date'])) {
-                $hours = esc(find_remaining_time($adv['end_date'])['hours']);
-                $minutes = esc(find_remaining_time($adv['end_date'])['minutes']);
-            }
+                $hours = find_remaining_time($adv['end_date'])['hours'];
+                $minutes = find_remaining_time($adv['end_date'])['minutes'];
 
-            if ($hours === 0) {
-                echo 'timer--finishing';
-            };
+                if ($hours === 0) {
+                    echo 'timer--finishing';
+                };
+            }
             ?>">
-                <?=
-//                    find_remaining_time($adv['end_date'])['hours'] . ':' .
-//                    find_remaining_time($adv['end_date'])['minutes'];
-                $hours . ":" . $minutes;
-                ?>
+                <?= $hours . ":" . $minutes; ?>
             </div>
             <div class="lot-item__cost-state">
               <div class="lot-item__rate">
                 <span class="lot-item__amount">Текущая цена</span>
                 <span class="lot-item__cost">
-                    <?php $current_price = $adv['max_bet'] ??
-                        $adv['current_price'];
-                    echo format_sum($current_price); ?> <b class="rub">р</b>
+                    <?php
+                        if (isset($adv['max_bet']) || isset($adv['current_price'])) {
+                            $current_price = $adv['max_bet'] ?? $adv['current_price'];
+                            echo format_sum($current_price);
+                        }
+                    ?> <b class="rub">р</b>
                 </span>
               </div>
               <div class="lot-item__min-cost">
-Мин. ставка <span><?= format_sum($adv['min_next_bet']); ?> </span>
+Мин. ставка <span><?php
+                      if (isset($adv['min_next_bet'])) {
+                        echo format_sum($adv['min_next_bet']);
+                      } ?> </span>
               </div>
             </div>
 
             <?php $form_error = count($errors) ? "form--invalid" : ""; ?>
-            <form class="lot-item__form <?php if(!isset($_SESSION['user']) || $adv['author_id'] === (int) $_SESSION['user']['id']): ?>visually-hidden<?php endif; ?> <?= $form_error; ?>" action="/lot.php?id=<?= $adv['id']; ?>" method="post" autocomplete="off">
+            <form class="lot-item__form <?php
+            // TODO вынести в функцию условие
+            if(!isset($_SESSION['user']) || $adv['author_id'] === (int) $_SESSION['user']['id']): ?>visually-hidden<?php endif; ?> <?= $form_error; ?>" action="/lot.php?id=<?= $adv['id']; ?>" method="post" autocomplete="off">
               <p class="lot-item__form-item form__item <?php if(isset($errors['cost'])): ?>form__item--invalid<?php endif; ?>">
                 <label for="cost">Ваша ставка</label>
-                <input id="cost" type="number" name="cost" placeholder="<?= format_sum($adv['min_next_bet']); ?>">
-                <span class="form__error"><?= $errors['cost'] ?? null; ?></span>
+                <input id="cost" type="number" name="cost" placeholder="<?php
+                if (isset($adv['min_next_bet'])) {
+                    echo format_sum($adv['min_next_bet']);
+                }
+                ?>">
+                <span class="form__error"><?= isset($errors['cost']) ? esc($errors['cost']) : null; ?></span>
               </p>
               <button type="submit" class="button">Сделать ставку</button>
             </form>
@@ -65,11 +73,18 @@
             <table class="history__list">
                 <?php foreach ($bets as $bet): ?>
                     <tr class="history__item">
-                        <td class="history__name"><?= $bet['user_name']; ?></td>
-                        <td class="history__price"><?= format_sum((float)$bet['price']); ?></td>
+                        <td class="history__name">
+                            <?= isset($bet['user_name']) ? esc($bet['user_name']) : null; ?>
+                        </td>
+                        <td class="history__price"><?php
+                            if (isset($bet['price'])) {
+                                echo format_sum((float)$bet['price']);
+                            } ?></td>
                         <td class="history__time">
                             <?php
+                            if (isset($bet['date'])) {
                                 echo date('y.m.d', strtotime($bet['date'])) . ' в ' . date('H:i', strtotime($bet['date']));
+                            }
                             ?>
                         </td>
                     </tr>
