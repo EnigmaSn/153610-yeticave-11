@@ -299,22 +299,8 @@ function validate_login_form(mysqli $link, array $fields) : array {
     $errors = array_filter($errors);
     return $errors;
 }
-//function validate_bet_form(mysqli $link, array $fields) : array {
-//    $errors = [];
-//    $required_fields = [
-//        'cost',
-//    ];
-//    $errors['cost'] = validate_cost($link, $fields['cost']);
-//
-//    foreach ($fields as $field_name => $field_value) {
-//        if (in_array($field_name, $required_fields) && empty($field_value)) {
-//            $errors[$field_name] = "Поле $field_name необходимо заполнить";
-//        }
-//    }
-//    $errors = array_filter($errors);
-//
-//    return $errors;
-//}
+
+// TODO проверить
 function validate_cost(mysqli $link, string $cost) {
     if (!is_int($cost)) {
         return "Ставка должна быть числом";

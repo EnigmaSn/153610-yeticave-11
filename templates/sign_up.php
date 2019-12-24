@@ -7,7 +7,10 @@
     <div class="form__item <?php if(isset($errors['email'])): ?>form__item--invalid<?php endif; ?>"> <!-- form__item--invalid -->
         <label for="email">E-mail <sup>*</sup></label>
         <input id="email" type="text" name="email" placeholder="Введите e-mail" value="<?= get_post_val('email') ?>">
-        <span class="form__error"><?= $errors['email']; ?></span>
+        <span class="form__error">
+<!--            --><?//= esc($errors['email']) ?? ''; ?>
+            <?= (isset($errors['email']) ? esc($errors['email']) : null); ?>
+        </span>
     </div>
     <div class="form__item <?php if(isset($errors['password'])): ?>form__item--invalid<?php endif; ?>">
         <label for="password">Пароль <sup>*</sup></label>

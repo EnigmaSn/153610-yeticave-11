@@ -3,7 +3,7 @@ require_once('db.php');
 
 /**
  * Получение списка новых лотов
- * @param $link - ресурс соединения (уточнить тип данных)
+ * @param $link - ресурс соединения
  * @return array - массив списка лотов
  */
 function get_lots($link) {
@@ -27,7 +27,8 @@ function get_lots($link) {
  * @param $link - ресурс соединения
  * @return array
  */
-function get_categories($link) {
+
+function get_categories(mysqli $link) : array {
     $sql = "
     SELECT `id`, `name`, `symbol_code` FROM `categories`;";
     $sql_result = mysqli_query($link, $sql);
@@ -91,12 +92,7 @@ function get_password(mysqli $link, string $email) : ?array {
 
 function get_user(mysqli $link, string $email) : array
 {
-    //$sql = "SELECT id, name FROM users WHERE email = '$email'";
     $sql = "SELECT id, name FROM users WHERE email = ?";
-//    $result = mysqli_query($link, $sql);
-//    if (!$result) {
-//        exit(mysqli_error($link));
-//    }
     $stmt = db_get_prepare_stmt($link, $sql, $data = [$email]);
     if (!mysqli_stmt_execute($stmt)) {
         exit(mysqli_errno($link));
@@ -361,7 +357,7 @@ function get_lots_by_cat_count(mysqli $link, int $category) {
         return 'Нет лотов по вашему запросу';
     }
 
-    return 'Ошибка';
+    return false;
 }
 
 function get_lots_by_category(mysqli $link, int $category, int $limit, int $offset) : array {
