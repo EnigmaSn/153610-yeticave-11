@@ -32,8 +32,7 @@
                 <span class="lot-item__cost">
                     <?php $current_price = $adv['max_bet'] ??
                         $adv['current_price'];
-                    echo format_sum($current_price); ?>
-                <?//= format_sum($adv['current_price']); ?> <b class="rub">р</b>
+                    echo format_sum($current_price); ?> <b class="rub">р</b>
                 </span>
               </div>
               <div class="lot-item__min-cost">
@@ -60,16 +59,7 @@
                         <td class="history__price"><?= format_sum((float)$bet['price']); ?></td>
                         <td class="history__time">
                             <?php
-                            /* пока без автоматического рассчета даты
-                            '5 ' .
-                            get_noun_plural_form(5, 'минуту', 'минуты', 'минут') .
-                            ' назад'
-                             время ставки */
-
-                            //get_elapsed_time($bet['date']);
-
-                            // TODO написать функцию для вывода значений, если прошло менее часа
-                            echo date('y.m.d', strtotime($bet['date'])) . ' в ' . date('H:i', strtotime($bet['date']));
+                                echo date('y.m.d', strtotime($bet['date'])) . ' в ' . date('H:i', strtotime($bet['date']));
                             ?>
                         </td>
                     </tr>

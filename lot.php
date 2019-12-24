@@ -54,7 +54,6 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
                 } else {
                     echo "Ставка НЕ добавлена";
                 }
-
             }
         }
 

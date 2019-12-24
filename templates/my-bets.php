@@ -6,7 +6,7 @@
     <?php foreach ($bets as $bet): ?>
         <?php $timer = get_timer_state($bet, $user_id, $win_bets); ?>
         <tr class="rates__item
-            <?php //$timer['class']; ?>">
+            <?php $timer['class']; ?>">
             <td class=" rates__info">
                 <div class="rates__img">
                     <img src="uploads/<?= $bet['img']; ?>" width="54" height="40"
