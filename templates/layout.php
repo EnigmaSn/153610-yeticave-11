@@ -16,7 +16,7 @@
         <div class="main-header__container container">
             <h1 class="visually-hidden">YetiCave</h1>
             <a class="main-header__logo" <?php
-            if (isset($_SERVER['PHP_SELF']) !== '/index.php') {
+            if (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF'] !== '/index.php') {
                 echo 'href="/index.php"';
             }; ?>
             >
@@ -54,7 +54,7 @@
     </header>
 
     <main class="<?php
-    if (isset($_SERVER['PHP_SELF']) == '/index.php') {
+    if (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF'] == '/index.php') {
         echo 'container';
     }; ?>">
         <?= $page_content; ?>

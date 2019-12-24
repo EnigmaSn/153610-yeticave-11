@@ -1,14 +1,18 @@
 <?= include_template('nav.php', ['categories' => $categories]) ?>
 
 <section class="lot-item container">
-      <h2><?= esc($adv['lot_name']); ?></h2>
+      <h2>
+          <?= (isset($adv['lot_name']) ? esc($adv['lot_name']) : null); ?>
+      </h2>
       <div class="lot-item__content">
         <div class="lot-item__left">
           <div class="lot-item__image">
-            <img src="uploads/<?= $adv['img']; ?>" width="730" height="548" alt="<?= $adv['lot_name']; ?>">
+            <img src="uploads/<?= (isset($adv['img']) ? esc($adv['img']) : null); ?>" width="730" height="548" alt="<?= (isset($adv['lot_name']) ? esc($adv['lot_name']) : null); ?>">
           </div>
-          <p class="lot-item__category">Категория: <span><?= $adv['category_id']; ?></span></p>
-          <p class="lot-item__description"><?= esc($adv['description']); ?></p>
+          <p class="lot-item__category">Категория: <span><?= (isset($adv['category_id']) ? esc($adv['category_id']) : null); ?></span></p>
+          <p class="lot-item__description">
+              <?= (isset($adv['description']) ? esc($adv['description']) : null); ?>
+          </p>
         </div>
         <div class="lot-item__right">
           <div class="lot-item__state">
