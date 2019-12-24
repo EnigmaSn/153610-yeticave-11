@@ -49,12 +49,12 @@ if (isset($_SESSION['user'])) {
     $error = "Error 403. Доступ запрещен";
     $page_content = include_template('error.php', [
         'categories' => $categories,
-        'error'      => $error
+        'error' => $error
     ]);
 }
 $layout_content = include_template(
     'layout.php',
-[
+    [
         'page_content' => $page_content,
         'title' => 'Страница регистрации',
         'categories' => $categories,

@@ -27,9 +27,9 @@ if (!empty($is_winner)) {
 $page_content = include_template('my-bets.php', [
     'categories' => $categories,
     'bets' => $bets ?? null,
-    'errors'      => $errors,
-    'user_id'    => $user_id,
-    'win_bets'   => $win_bets ?? []
+    'errors' => $errors,
+    'user_id' => $user_id,
+    'win_bets' => $win_bets ?? []
 
 ]);
 
