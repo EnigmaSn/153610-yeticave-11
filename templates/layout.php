@@ -16,7 +16,7 @@
         <div class="main-header__container container">
             <h1 class="visually-hidden">YetiCave</h1>
             <a class="main-header__logo" <?php
-            if ($_SERVER['PHP_SELF'] !== '/index.php') {
+            if (isset($_SERVER['PHP_SELF']) !== '/index.php') {
                 echo 'href="/index.php"';
             }; ?>
             >
@@ -31,7 +31,9 @@
             <nav class="user-menu">
                 <?php if (isset($_SESSION['user'])) : ?>
                     <div class="user-menu__logged">
-                        <p><?= esc($_SESSION['user']['name']); ?></p>
+                        <p>
+                            <?= (isset($_SESSION['user']['name']) ? esc($_SESSION['user']['name']) : null); ?>
+                        </p>
                         <a class="user-menu__bets" href="my-bets.php">Мои
                             ставки</a>
                         <a class="user-menu__logout"
@@ -52,7 +54,7 @@
     </header>
 
     <main class="<?php
-    if ($_SERVER['PHP_SELF'] == '/index.php') {
+    if (isset($_SERVER['PHP_SELF']) == '/index.php') {
         echo 'container';
     }; ?>">
         <?= $page_content; ?>
