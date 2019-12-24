@@ -83,7 +83,6 @@ $layout_content = include_template(
     'layout.php',
     [
         'page_content' => $page_content,
-        //'user_name' => $user_name,
         'title' => $adv['lot_name'] ?? 'Ошибка',
         'categories' => $categories,
         'flatpickr' => false

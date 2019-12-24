@@ -76,6 +76,13 @@ function get_post_val($name) {
     return esc($value);
 }
 
+/**
+ * Проверка корректности длины введенного значения
+ * @param $name
+ * @param $min
+ * @param $max
+ * @return string|null
+ */
 function is_correct_length($name, $min, $max) {
     $len = strlen($name);
     if ($len < $min || $len > $max) {
@@ -85,6 +92,11 @@ function is_correct_length($name, $min, $max) {
 }
 
 // GETTERS
+/**
+ * Получение списка всех полей для формы добавления лота
+ * @param $lot_data
+ * @return array
+ */
 function get_lot_form_data($lot_data) : array {
     // возврат значений для всех указанных полей
     $lot_data = filter_input_array(INPUT_POST,
@@ -101,6 +113,11 @@ function get_lot_form_data($lot_data) : array {
     return $lot_data;
 }
 
+/**
+ * Получение списка всех полей для формы регистрации
+ * @param array $fields
+ * @return array
+ */
 function get_user_form_reg_data(array $fields) : array {
     $fields = filter_input_array(INPUT_POST,
         [
@@ -111,6 +128,12 @@ function get_user_form_reg_data(array $fields) : array {
         ], true);
     return $fields;
 }
+
+/**
+ * Получение списка всех полей для формы входа
+ * @param array $fields
+ * @return array
+ */
 function get_login_form_data(array $fields) : array {
     $fields = filter_input_array(INPUT_POST,
         [
@@ -119,6 +142,12 @@ function get_login_form_data(array $fields) : array {
         ], true);
     return $fields;
 }
+
+/**
+ * Получение списка всех полей для формы добавления ставки
+ * @param array $fields
+ * @return array
+ */
 function get_add_bet_form_data (array $fields) : array {
     $fields = filter_input_array(INPUT_POST,
         [
@@ -127,14 +156,28 @@ function get_add_bet_form_data (array $fields) : array {
     return $fields;
 }
 
-
 // VALIDATION
+/**
+ * Валидация формы добавления ставки
+ * @param $bet_data
+ * @param $min_next_bet
+ * @param $author_id
+ * @return array
+ */
 function validate_bet_form($bet_data, $min_next_bet, $author_id) : array {
     $errors = [];
     $errors['cost'] = validate_bet($bet_data, $min_next_bet, $author_id );
     $errors = array_filter($errors);
     return  $errors;
 }
+
+/**
+ * Валидация поля ставки
+ * @param $data
+ * @param $min_next_bet
+ * @param $author_id
+ * @return string|null
+ */
 function validate_bet($data, $min_next_bet, $author_id) {
 
     if (!is_int($data)) {
@@ -156,6 +199,13 @@ function validate_bet($data, $min_next_bet, $author_id) {
     return null;
 }
 
+/**
+ * Валидация формы добавления лота
+ * @param array $lot_data
+ * @param $file_data
+ * @param array $categories_id
+ * @return array
+ */
 function validate_lot_form(array $lot_data, $file_data, array $categories_id) : array {
     $errors = [];
     $required_fields = [
@@ -170,7 +220,6 @@ function validate_lot_form(array $lot_data, $file_data, array $categories_id) : 
     $errors['lot-name'] = validate_lot_name($lot_data['lot-name']);
     $errors['category'] = validate_lot_category($lot_data['category'], $categories_id);
     $errors['message'] = validate_lot_message($lot_data['message']);
-    //$errors['lot-image'];
     $errors['lot-rate'] = validate_lot_rate($lot_data['lot-rate']);
     $errors['lot-step'] = validate_lot_step($lot_data['lot-step']);
     $errors['lot-date'] = validate_lot_date($lot_data['lot-date']);
@@ -187,30 +236,66 @@ function validate_lot_form(array $lot_data, $file_data, array $categories_id) : 
     return  $errors;
 }
 
+/**
+ * Валидация поля "Категория" в форме добавления лота
+ * @param string $category
+ * @param array $categories
+ * @return string|null
+ */
 function validate_lot_category(string $category, array $categories) {
     if (!in_array($category, $categories)) {
         return "Такой категории не существует";
     }
     return null;
 }
+
+/**
+ * Валидация поля "Имя лота" в форме добавления лота
+ * @param $data
+ * @return string|null
+ */
 function validate_lot_name($data) {
     return is_correct_length($data, 3, 128);
 }
+
+/**
+ * Валидация поля "Описание" в форме добавления лота
+ * @param $data
+ * @return string|null
+ */
 function validate_lot_message($data) {
     return is_correct_length($data, 3, 3000);
 }
+
+/**
+ * Валидация поля "Стартовая цена" в форме добавления лота
+ * @param $data
+ * @return string|null
+ */
 function validate_lot_rate($data) {
     if (!$data || $data <= 0) {
         return "Начальная цена должна быть числом больше ноля";
     }
     return null;
 }
+
+/**
+ * Валидация поля "Шаг ставки" в форме добавления лота
+ * @param $data
+ * @return string|null
+ */
 function validate_lot_step($data) {
     if (!$data || $data <= 0) {
         return "Шаг ставки должен быть числом больше ноля";
     }
     return null;
 }
+
+/**
+ * Валидация поля "Дата окончания лота" в форме добавления лота
+ * @param $data
+ * @return string|null
+ */
 function validate_lot_date($data) {
     $format = is_date_valid($data); // boolean
     $current_date = date_create("now");
@@ -220,6 +305,12 @@ function validate_lot_date($data) {
     }
     return null;
 }
+
+/**
+ * Валидация загруженного файла в форме добавления лота
+ * @param array $data
+ * @return string|null
+ */
 function validate_lot_file(array $data) {
     if ($data['size'] === 0) {
         return "Загрузите изображение";
@@ -236,6 +327,12 @@ function validate_lot_file(array $data) {
     return null;
 }
 
+/**
+ * Валидация формы регистрации
+ * @param mysqli $link
+ * @param array $fields
+ * @return array
+ */
 function validate_reg_form(mysqli $link, array $fields) : array {
     $errors = [];
     $required_fields = [
@@ -254,6 +351,13 @@ function validate_reg_form(mysqli $link, array $fields) : array {
     $errors = array_filter($errors);
     return $errors;
 }
+
+/**
+ * Валидация формы входа
+ * @param mysqli $link
+ * @param array $fields
+ * @return array
+ */
 function validate_login_form(mysqli $link, array $fields) : array {
     $errors = [];
     $required_fields = [
@@ -272,13 +376,12 @@ function validate_login_form(mysqli $link, array $fields) : array {
     return $errors;
 }
 
-// TODO проверить
-function validate_cost(mysqli $link, string $cost) {
-    if (!is_int($cost)) {
-        return "Ставка должна быть числом";
-    }
-    return null;
-}
+/**
+ * Валидация поля email в форме входа и проверка существования email в БД
+ * @param mysqli $link
+ * @param string $email
+ * @return string|null
+ */
 function validate_email_exist(mysqli $link, string $email) : ?string {
     $email_is_valid = filter_var($email, FILTER_VALIDATE_EMAIL);
     if (!$email_is_valid) {
@@ -293,6 +396,14 @@ function validate_email_exist(mysqli $link, string $email) : ?string {
     }
     return null;
 }
+
+/**
+ * Валидация пароля в ворме входа
+ * @param mysqli $link
+ * @param string $email
+ * @param string $password
+ * @return string|null
+ */
 function validate_login_password(mysqli $link, string $email, string $password) : ?string {
     $password_from_db = get_password($link, $email)['password'];
     if(!is_null(is_correct_length($email, 3, 128))) {
@@ -303,6 +414,13 @@ function validate_login_password(mysqli $link, string $email, string $password) 
     }
     return null;
 }
+
+/**
+ * Валидация поля email в форме регистрации
+ * @param mysqli $link
+ * @param $email
+ * @return string|null
+ */
 function validate_email(mysqli $link, $email) {
     $email_is_valid = filter_var($email, FILTER_VALIDATE_EMAIL);
     if(!is_null(is_correct_length($email, 3, 128))) {
@@ -319,6 +437,11 @@ function validate_email(mysqli $link, $email) {
 }
 
 // OTHER
+/**
+ * Сохранение изображение и возврат имени файла
+ * @param array $data
+ * @return string - новое имя файла с расширением
+ */
 function save_lot_img(array $data) : string {
     $tmp_file_name = $data['name'];
     $tmp_file_path = $data['tmp_name'];
@@ -332,6 +455,12 @@ function save_lot_img(array $data) : string {
 
     return "Файл не перемещен";
 }
+
+/**
+ * Время, когда была сделана ставка
+ * @param string $bets_creation_time
+ * @return string
+ */
 function get_bet_timeleft(string $bets_creation_time): string
 {
     $now = time();
@@ -358,6 +487,14 @@ function get_bet_timeleft(string $bets_creation_time): string
 
     return $time_left;
 }
+
+/**
+ * Состояние торгов (в процессе, окончены, заканчиваются)
+ * @param array $lot
+ * @param int $user_id
+ * @param array $win_bets
+ * @return array
+ */
 function get_timer_state(array $lot, int $user_id = 0, $win_bets = []) : array
 {
     $time_remaining = get_time_remaining($lot['end_date']);
@@ -386,6 +523,11 @@ function get_timer_state(array $lot, int $user_id = 0, $win_bets = []) : array
     return $timer;
 }
 
+/**
+ * Оставшееся до истечения торгов время
+ * @param string $time
+ * @return array
+ */
 function get_time_remaining(string $time): array
 {
     $time_now = time();
@@ -405,6 +547,12 @@ function get_time_remaining(string $time): array
     return $time_remaining;
 }
 
+/**
+ * Письмо победителю торгов
+ * @param array $winner
+ * @param int $lot_id
+ * @return Swift_Message
+ */
 function get_message(array $winner, int $lot_id) : Swift_Message
 {
     $msg_content = include_template('email.php', [

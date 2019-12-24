@@ -78,6 +78,12 @@ function get_bets_for_lot($link, $received_lot_id) {
     return $bets;
 }
 
+/**
+ * Получение пароля пользователя по email
+ * @param mysqli $link
+ * @param string $email
+ * @return array|null
+ */
 function get_password(mysqli $link, string $email) : ?array {
     $sql = "SELECT password FROM users WHERE email = ?";
     $stmt = db_get_prepare_stmt($link, $sql, $data = [$email]);
@@ -90,6 +96,12 @@ function get_password(mysqli $link, string $email) : ?array {
     return $password;
 }
 
+/**
+ * Выбор пользовател по email
+ * @param mysqli $link
+ * @param string $email
+ * @return array
+ */
 function get_user(mysqli $link, string $email) : array
 {
     $sql = "SELECT id, name FROM users WHERE email = ?";
@@ -102,6 +114,12 @@ function get_user(mysqli $link, string $email) : array
     return $user;
 }
 
+/**
+ * Добавление лота в БД и возврат его id
+ * @param $link
+ * @param $lot_data
+ * @return int|string|null
+ */
 function insert_lot($link, $lot_data) {
     $user_id = $_SESSION['user']['id'];
     $sql = "INSERT INTO `lots` (`name`, `description`, `start_price`, `end_date`, `step`, `category_id`, `img`, `create_date`, `author_id`)
@@ -166,7 +184,12 @@ function insert_user($link) {
     return null;
 }
 
-// число полученных по запросу лотов
+/**
+ * Число полученных по запросу лотов
+ * @param $link
+ * @param $query
+ * @return string
+ */
 function get_lots_count($link, $query) {
     // если есть поисковый GET запрос
     if ($query) {
@@ -190,6 +213,14 @@ function get_lots_count($link, $query) {
     return "Пустой запрос";
 }
 
+/**
+ * Получение лотов по поисковому запросу
+ * @param $link
+ * @param $query
+ * @param int $limit
+ * @param int $offset
+ * @return array
+ */
 function get_searching_lots($link, $query, int $limit,
                             int $offset) : array {
     $sql = "SELECT lots.id,
@@ -216,6 +247,15 @@ function get_searching_lots($link, $query, int $limit,
     return $lots;
 }
 
+/**
+ * Добавление ставки в БД
+ * @param mysqli $link
+ * @param float $bet
+ * @param int $lot_id
+ * @param int $user_id
+ * @param int $price
+ * @return bool|null
+ */
 function insert_bet(mysqli $link, float $bet, int $lot_id, int $user_id, int $price) : ?bool {
     $sql = "INSERT INTO `bets`
 	SET `bets`.`date` = NOW(),
@@ -239,6 +279,12 @@ function insert_bet(mysqli $link, float $bet, int $lot_id, int $user_id, int $pr
     return null;
 }
 
+/**
+ * Получение ставок для конкретного пользователя
+ * @param mysqli $link
+ * @param int $user_id
+ * @return array
+ */
 function get_bets_for_user(mysqli $link, int $user_id) : array {
     $sql = "SELECT l.img,
         l.name,
@@ -268,6 +314,12 @@ function get_bets_for_user(mysqli $link, int $user_id) : array {
     return $bets ?? [];
 }
 
+/**
+ * Получение лотов, в которых есть победитель
+ * @param mysqli $link
+ * @param int $user_id
+ * @return array
+ */
 function get_lots_where_winner(mysqli $link, int $user_id) : array {
     $sql = "SELECT id FROM lots WHERE winner_id = ?";
     $stmt = db_get_prepare_stmt($link, $sql, $data = [$user_id]);
@@ -281,6 +333,12 @@ function get_lots_where_winner(mysqli $link, int $user_id) : array {
     return array_column($lots_win, 'id') ?? [];
 }
 
+/**
+ * Получение выигравших ставок юзера
+ * @param mysqli $link
+ * @param array $lots_ids
+ * @return array
+ */
 function get_win_bets_for_user(mysqli $link, array $lots_ids) : array
 {
     $sql = "SELECT id FROM bets
@@ -300,6 +358,11 @@ function get_win_bets_for_user(mysqli $link, array $lots_ids) : array
     return array_column($bets_win, 'id');
 }
 
+/**
+ * Получение лотов, в которых нет победителя
+ * @param mysqli $link
+ * @return array
+ */
 function get_lots_without_win(mysqli $link) : array
 {
     $sql = "SELECT id FROM lots WHERE end_date <= NOW() AND winner_id IS NULL";
@@ -308,6 +371,12 @@ function get_lots_without_win(mysqli $link) : array
     return $lots ?? [];
 }
 
+/**
+ * Получение данных победителя для конкретного лота
+ * @param mysqli $link
+ * @param int $lot_id
+ * @return array
+ */
 function get_winner(mysqli $link, int $lot_id) : array
 {
     $sql = "SELECT b.user_id,
@@ -326,6 +395,13 @@ function get_winner(mysqli $link, int $lot_id) : array
     return $result ?? [];
 }
 
+/**
+ * Добавление в БД победителя для конкретного лота
+ * @param mysqli $link
+ * @param int $lot
+ * @param int $winner
+ * @return bool
+ */
 function add_winner_to_lot(mysqli $link, int $lot, int $winner) : bool {
     $sql = "UPDATE lots 
         SET winner_id = $winner 
@@ -337,6 +413,12 @@ function add_winner_to_lot(mysqli $link, int $lot, int $winner) : bool {
     return true;
 }
 
+/**
+ * Наличие лотов для конкретной категории
+ * @param mysqli $link
+ * @param int $category
+ * @return bool|string
+ */
 function get_lots_by_cat_count(mysqli $link, int $category) {
     if ($category !== 0) {
         $sql = "SELECT COUNT(*) as count_item
@@ -360,6 +442,14 @@ function get_lots_by_cat_count(mysqli $link, int $category) {
     return false;
 }
 
+/**
+ * Получение лотов для конкретной категории
+ * @param mysqli $link
+ * @param int $category
+ * @param int $limit
+ * @param int $offset
+ * @return array
+ */
 function get_lots_by_category(mysqli $link, int $category, int $limit, int $offset) : array {
     $sql = "
         SELECT l.id,
@@ -387,6 +477,12 @@ function get_lots_by_category(mysqli $link, int $category, int $limit, int $offs
     return $result = mysqli_fetch_all($result, MYSQLI_ASSOC) ?? [];
 }
 
+/**
+ * Получение количества ставок для лота
+ * @param mysqli $link
+ * @param int $lot_id
+ * @return int
+ */
 function get_count_bets_for_lot(mysqli $link, int $lot_id): int
 {
     $sql = "SELECT COUNT(*) FROM bets WHERE lot_id = ?";

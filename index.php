@@ -19,7 +19,6 @@
         'layout.php',
         [
             'page_content' => $page_content,
-            //'user_name' => $user_name,
             'title' => 'Yeti Cave - Главная страница',
             'categories' => $categories,
             'flatpickr' => false

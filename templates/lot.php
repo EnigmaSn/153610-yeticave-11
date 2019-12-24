@@ -18,9 +18,6 @@
           <div class="lot-item__state">
             <div class="lot-item__timer timer
             <?php
-//            $hours = find_remaining_time($adv['end_date'])['hours'];
-//            $minutes = find_remaining_time($adv['end_date'])['minutes'];
-
             if (isset($adv['end_date'])) {
                 $hours = find_remaining_time($adv['end_date'])['hours'];
                 $minutes = find_remaining_time($adv['end_date'])['minutes'];
